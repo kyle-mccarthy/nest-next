@@ -1,0 +1,4 @@
+{
+  "language": "ts",
+  "collection": "@nestjs/schematics"
+}

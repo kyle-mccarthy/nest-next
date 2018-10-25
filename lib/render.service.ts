@@ -2,16 +2,30 @@ import { HttpServer, Injectable } from '@nestjs/common';
 import { ErrorRenderer, Renderer, RequestHandler } from './types';
 
 @Injectable()
-class RenderService {
+export class RenderService {
   private requestHandler?: RequestHandler;
   private renderer?: Renderer;
   private errorRenderer?: ErrorRenderer;
   private res?: any;
   private req?: any;
+  private viewsDir: string | null = '/views';
+
+  /**
+   * Set the directory that Next will render pages from
+   */
+  public setViewsDir(path: string | null) {
+    this.viewsDir = path;
+  }
+
+  /**
+   * Get the directory that Next renders pages from
+   */
+  public getViewsDir() {
+    return this.viewsDir;
+  }
 
   /**
    * Set the default request handler provided by next
-   * @param handler
    */
   public setRequestHandler(handler: RequestHandler) {
     this.requestHandler = handler;
@@ -26,7 +40,6 @@ class RenderService {
 
   /**
    * Set the render function provided by next
-   * @param renderer
    */
   public setRenderer(renderer: Renderer) {
     this.renderer = renderer;
@@ -65,14 +78,13 @@ class RenderService {
   /**
    * Bind to the render function for the HttpServer that nest is using and override
    * it to allow for next to render the page
-   * @param server
    */
   public bindHttpServer(server: HttpServer) {
     server.render = (_: any, view: string, options: any) => {
       const renderer = this.getRenderer();
 
       if (this.req && this.res && renderer) {
-        return renderer(this.req, this.res, `/views/${view}`, options);
+        return renderer(this.req, this.res, this.getViewPath(view), options);
       } else if (!this.req) {
         throw new Error('RenderService: req is not defined.');
       } else if (!this.res) {
@@ -84,6 +96,13 @@ class RenderService {
       throw new Error('RenderService: failed to render');
     };
   }
-}
 
-export default RenderService;
+  /**
+   * Format the path to the view
+   */
+  protected getViewPath(view: string) {
+    const baseDir = this.getViewsDir();
+    const basePath = baseDir ? baseDir : '';
+    return `${basePath}/${view}`;
+  }
+}

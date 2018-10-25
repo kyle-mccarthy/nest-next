@@ -3,7 +3,7 @@ import { parse as parseUrl } from 'url';
 import { ErrorRenderer, RequestHandler } from './types';
 
 @Catch()
-class RenderFilter implements ExceptionFilter {
+export class RenderFilter implements ExceptionFilter {
   private readonly requestHandler: RequestHandler;
   private readonly errorRenderer: ErrorRenderer;
 
@@ -20,13 +20,13 @@ class RenderFilter implements ExceptionFilter {
    */
   public async catch(err: any, ctx: ArgumentsHost) {
     const [req, res] = ctx.getArgs();
-    
+
     const rawRes = res.res ? res.res : res;
     const rawReq = req.raw ? req.raw : req;
 
     if (!rawRes.headersSent) {
       if (err.response === undefined) {
-        const { pathname, query } = parseUrl(req.raw.url, true);
+        const { pathname, query } = parseUrl(rawReq.url, true);
         await this.errorRenderer(err, rawReq, rawRes, pathname, query);
       } else {
         await this.requestHandler(rawReq, rawRes);
@@ -34,5 +34,3 @@ class RenderFilter implements ExceptionFilter {
     }
   }
 }
-
-export default RenderFilter;

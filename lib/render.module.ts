@@ -1,8 +1,12 @@
 import { INestApplication, Module } from '@nestjs/common';
 import { Server } from 'next';
-import RenderFilter from './render.filter';
-import RenderMiddleware from './render.middleware';
-import RenderService from './render.service';
+import { RenderFilter } from './render.filter';
+import { RenderMiddleware } from './render.middleware';
+import { RenderService } from './render.service';
+
+export interface RegisterOptions {
+  viewsDir: null | string;
+}
 
 @Module({
   providers: [RenderService],
@@ -13,7 +17,11 @@ export class RenderModule {
 
   constructor(private readonly service: RenderService) {}
 
-  public register(app: INestApplication, server: Server) {
+  public register(
+    app: INestApplication,
+    server: Server,
+    options: Partial<RegisterOptions> = {},
+  ) {
     this.app = app;
     this.server = server;
 
@@ -29,5 +37,9 @@ export class RenderModule {
         this.service.getErrorRenderer()!,
       ),
     );
+
+    if (options.viewsDir !== undefined) {
+      this.service.setViewsDir(options.viewsDir);
+    }
   }
 }

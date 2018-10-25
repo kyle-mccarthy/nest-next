@@ -1,8 +1,8 @@
 import { Injectable, MiddlewareFunction, NestMiddleware } from '@nestjs/common';
-import RenderService from './render.service';
+import { RenderService } from './render.service';
 
 @Injectable()
-class RenderMiddleware implements NestMiddleware {
+export class RenderMiddleware implements NestMiddleware {
   private readonly renderService: RenderService;
 
   public constructor(renderService: RenderService) {
@@ -22,5 +22,3 @@ class RenderMiddleware implements NestMiddleware {
     };
   }
 }
-
-export default RenderMiddleware;
