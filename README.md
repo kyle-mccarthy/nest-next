@@ -2,6 +2,8 @@
 
 ## Installation
 
+    yarn add nest-next
+
 ## Usage
 
 ### Import and register the RenderModule

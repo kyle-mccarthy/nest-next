@@ -4,6 +4,10 @@
   "description": "Nestjs module to allow for server side rendering with Nextjs",
   "author": "Kyle McCarthy",
   "license": "MIT",
+  "keywords": [
+    "nestjs",
+    "nextjs"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:kyle-mccarthy/nest-next.git"

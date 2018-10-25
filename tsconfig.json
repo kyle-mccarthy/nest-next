@@ -25,5 +25,5 @@
     "typeRoots": ["node_modules/@types"]
   },
   "include": ["lib/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "example"]
 }
