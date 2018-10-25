@@ -4,11 +4,6 @@
   "main": "index.js",
   "author": "Kyle McCarthy",
   "license": "MIT",
-  "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:kyle-mccarthy/nest-next-starter.git"
-  },
   "scripts": {
     "dev": "nodemon src/main.ts",
     "build:clean": "rm -rf .next",
