@@ -1,9 +1,13 @@
 {
   "name": "nest-next",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Nestjs module to allow for server side rendering with Nextjs",
   "author": "Kyle McCarthy",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kyle-mccarthy/nest-next.git"
+  },
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.json",
     "prepublish:yarn": "yarn run build",
