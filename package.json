@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:kyle-mccarthy/nest-next.git"
+    "url": "https://github.com/kyle-mccarthy/nest-next.git"
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.json",
