@@ -6,8 +6,6 @@ export class RenderService {
   private requestHandler?: RequestHandler;
   private renderer?: Renderer;
   private errorRenderer?: ErrorRenderer;
-  private res?: any;
-  private req?: any;
   private viewsDir: string | null = '/views';
 
   /**
@@ -65,32 +63,29 @@ export class RenderService {
   public getErrorRenderer(): ErrorRenderer | undefined {
     return this.errorRenderer;
   }
-  /**
-   * Set the current req and res
-   * @param req
-   * @param res
-   */
-  public next(req: any, res: any) {
-    this.req = req;
-    this.res = res;
-  }
 
   /**
    * Bind to the render function for the HttpServer that nest is using and override
    * it to allow for next to render the page
    */
   public bindHttpServer(server: HttpServer) {
-    server.render = (_: any, view: string, options: any) => {
-      const renderer = this.getRenderer();
+    const renderer = this.getRenderer();
+    const getViewPath = this.getViewPath.bind(this);
 
-      if (this.req && this.res && renderer) {
-        return renderer(this.req, this.res, this.getViewPath(view), options);
-      } else if (!this.req) {
-        throw new Error('RenderService: req is not defined.');
-      } else if (!this.res) {
-        throw new Error('RenderService: res is not defined.');
+    server.render = (response: any, view: string, options: any) => {
+      const isFastify = response.request !== undefined;
+
+      const res = isFastify ? response.res : response;
+      const req = isFastify ? response.request.raw : response.req;
+
+      if (req && res && renderer) {
+        return renderer(req, res, getViewPath(view), options);
       } else if (!renderer) {
-        throw new Error('RenderService: renderer is not set.');
+        throw new Error('RenderService: renderer is not set');
+      } else if (!res) {
+        throw new Error('RenderService: could not get the response');
+      } else if (!req) {
+        throw new Error('RenderService: could not get the request');
       }
 
       throw new Error('RenderService: failed to render');

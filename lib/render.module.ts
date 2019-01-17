@@ -1,7 +1,6 @@
 import { INestApplication, Module } from '@nestjs/common';
 import { Server } from 'next';
 import { RenderFilter } from './render.filter';
-import { RenderMiddleware } from './render.middleware';
 import { RenderService } from './render.service';
 
 export interface RegisterOptions {
@@ -30,7 +29,6 @@ export class RenderModule {
     this.service.setErrorRenderer(this.server.renderError.bind(this.server));
     this.service.bindHttpServer(this.app.getHttpAdapter());
 
-    this.app.use(new RenderMiddleware(this.service).resolve());
     this.app.useGlobalFilters(
       new RenderFilter(
         this.service.getRequestHandler()!,
