@@ -67,13 +67,30 @@ path for the page is relative to the `/pages` directory.
 
       @Get()
       @Render('Index')
-      public icons() {
+      public index() {
         // initial props
         return {
           title: 'Next with Nest',
         };
       }
     }
+
+Additionally, the render function is made available on the res object.
+
+    @Controller()
+    export class AppController {
+
+      @Get()
+      public index(@Res() res) {
+        res.render('Index', {
+          title: 'Next with Nest',
+        });
+      }
+    }
+
+The render function takes in the view, as well as the initial props passed to the page.
+
+    render = (view: string, initialProps?: any) => any
 
 ### Example folder structure
 

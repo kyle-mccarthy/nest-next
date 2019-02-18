@@ -1,4 +1,9 @@
-import { HttpServer, Injectable } from '@nestjs/common';
+import {
+  HttpServer,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { FastifyAdapter } from '@nestjs/core';
 import { ErrorRenderer, Renderer, RequestHandler } from './types';
 
 @Injectable()
@@ -72,24 +77,61 @@ export class RenderService {
     const renderer = this.getRenderer();
     const getViewPath = this.getViewPath.bind(this);
 
-    server.render = (response: any, view: string, options: any) => {
+    server.render = (response: any, view: string, data: any) => {
       const isFastify = response.request !== undefined;
 
       const res = isFastify ? response.res : response;
       const req = isFastify ? response.request.raw : response.req;
 
       if (req && res && renderer) {
-        return renderer(req, res, getViewPath(view), options);
+        return renderer(req, res, getViewPath(view), data);
       } else if (!renderer) {
-        throw new Error('RenderService: renderer is not set');
+        throw new InternalServerErrorException(
+          'RenderService: renderer is not set',
+        );
       } else if (!res) {
-        throw new Error('RenderService: could not get the response');
+        throw new InternalServerErrorException(
+          'RenderService: could not get the response',
+        );
       } else if (!req) {
-        throw new Error('RenderService: could not get the request');
+        throw new InternalServerErrorException(
+          'RenderService: could not get the request',
+        );
       }
 
       throw new Error('RenderService: failed to render');
     };
+
+    // and nextjs renderer to reply/response
+    if (server instanceof FastifyAdapter) {
+      server
+        .getInstance()
+        .decorateReply('render', function(view: string, data?: any) {
+          const res = this.res;
+          const req = this.request.raw;
+
+          if (!renderer) {
+            throw new InternalServerErrorException(
+              'RenderService: renderer is not set',
+            );
+          }
+
+          return renderer(req, res, getViewPath(view), data);
+        });
+    } else {
+      server.getInstance().use((req: any, res: any, next: () => any) => {
+        res.render = (view: string, data?: any) => {
+          if (!renderer) {
+            throw new InternalServerErrorException(
+              'RenderService: renderer is not set',
+            );
+          }
+          return renderer(req, res, getViewPath(view), data);
+        };
+
+        next();
+      });
+    }
   }
 
   /**
