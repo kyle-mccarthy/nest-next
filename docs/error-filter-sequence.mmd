@@ -1,0 +1,25 @@
+graph TB
+  NoRteReg[Error handled by RenderFilter]
+    
+    NoRteReg --> HdrsSnt{Headers sent?}
+  
+      HdrsSnt --> |T| FIN
+  
+      HdrsSnt --> |F| IntlNxtRoute{Internal<br>nextjs URL?}
+  
+        IntlNxtRoute --> |T| NxtReqHndlr[Use nextjs requestHandler]
+          NxtReqHndlr --> FIN
+
+        IntlNxtRoute --> |F| ErrHndlrReg{errorHandler<br>registered?}
+          ErrHndlrReg --> |T| ErrHndlrCall[Call error Handler]
+                
+            ErrHndlrCall --> ErrHndlrRes{Error handler<br>sent response?}
+
+              ErrHndlrRes --> |T| FIN
+
+              ErrHndlrRes --> |F| NxtErrRndr[Use nextjs errorRenderer]
+                NxtErrRndr --> FIN
+
+          ErrHndlrReg --> |F| NxtErrRndr
+            NxtErrRndr --> FIN[Done]
+            

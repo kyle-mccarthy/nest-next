@@ -1,4 +1,16 @@
-# NestJS NextJS Integration
+# NestJS NextJS Integration <!-- omit in toc -->
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Import and register the RenderModule](#import-and-register-the-rendermodule)
+    - [Default views/pages folder](#default-viewspages-folder)
+  - [Rendering Pages](#rendering-pages)
+  - [Handling Errors](#handling-errors)
+    - [Custom error handler](#custom-error-handler)
+    - [Error Flow (Diagram)](#error-flow-diagram)
+  - [Example folder structure](#example-folder-structure)
+- [Configuring Next](#configuring-next)
+- [By Example](#by-example)
 
 ## Installation
 
@@ -140,18 +152,11 @@ const main() => {
 
 ```
 
-#### Request Flow
+#### Error Flow (Diagram)
 
-<div style="text-align:center;">
-  <a href="./docs/out/request-sequence.png">
-    <img 
-      src="./docs/out/request-sequence.png" 
-      style="max-height:600px" 
-      alt="request sequence diagram" 
-      title="click to enlarge" />
-  </a>
-  <p style="font-size:80%">Request sequence diagram -- click to enlarge</p>
-</div>
+_The image is linked to a larger version_
+
+[![error filter sequence diagram](./docs/out/error-filter-sequence-sm.png)](./docs/out/error-filter-sequence.png)
 
 ### Example folder structure
 
