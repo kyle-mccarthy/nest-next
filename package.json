@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/next": "^8.0.1",
     "@types/node": "^11.10.4",
+    "mermaid.cli": "^0.5.1",
     "prettier": "^1.16.4",
     "reflect-metadata": "^0.1.13",
     "tslint": "^5.13.1",

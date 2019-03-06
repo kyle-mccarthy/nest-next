@@ -92,6 +92,67 @@ The render function takes in the view, as well as the initial props passed to th
 
     render = (view: string, initialProps?: any) => any
 
+### Handling Errors
+
+By default, errors will be handled and rendered with next's error renderer, which uses the ([customizable](https://nextjs.org/docs/#custom-error-handling)) \_error page. Additionally, errors can be intercepted by setting your own error handler.
+
+#### Custom error handler
+
+A custom error handler can be set to override or enhance the default behavior. This can be used for things such as logging the error or rendering a different response.
+
+In your custom error handler you have the option of just intercepting and inspecting the error, or sending your own response. If a response is sent from the error handler, the request is considered done and the error won't be forwarded to next's error renderer. If a response is not sent in the error handler, after the handler returns the error is forwarded to the error renderer. See the request flow below for visual explanation.
+
+**ErrorHandler Typedef**
+
+```typescript
+export type ErrorHandler = (
+  err: any,
+  req: any,
+  res: any,
+  pathname: any,
+  query: ParsedUrlQuery,
+) => Promise<any>;
+```
+
+**Setting ErrorHandler**
+
+You can set the error handler by getting the RenderService from nest's container.
+
+```typescript
+// in main.ts file after registering the RenderModule
+
+const main() => {
+  ...
+
+  const renderer = server.get(RenderModule);
+  renderer.register(server, app);
+
+  // get the RenderService
+  const service = server.get(RenderService);
+
+  service.setErrorHandler(async (err, req, res) => {
+    // send JSON response
+    res.send(err.response);
+  });
+
+  ...
+}
+
+```
+
+#### Request Flow
+
+<div style="text-align:center;">
+  <a href="./docs/out/request-sequence.png">
+    <img 
+      src="./docs/out/request-sequence.png" 
+      style="max-height:600px" 
+      alt="request sequence diagram" 
+      title="click to enlarge" />
+  </a>
+  <p style="font-size:80%">Request sequence diagram -- click to enlarge</p>
+</div>
+
 ### Example folder structure
 
 Next renders pages from the pages directory. The Nest source code can remain in the default `/src` folder
