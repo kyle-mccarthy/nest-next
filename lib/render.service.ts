@@ -4,7 +4,8 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { FastifyAdapter } from '@nestjs/core';
-import { ErrorRenderer, Renderer, RequestHandler } from './types';
+import { isInternalUrl } from './next-utils';
+import { ErrorHandler, ErrorRenderer, Renderer, RequestHandler } from './types';
 
 @Injectable()
 export class RenderService {
@@ -12,9 +13,11 @@ export class RenderService {
   private renderer?: Renderer;
   private errorRenderer?: ErrorRenderer;
   private viewsDir: string | null = '/views';
+  private errorHandler?: ErrorHandler;
 
   /**
    * Set the directory that Next will render pages from
+   * @param path
    */
   public setViewsDir(path: string | null) {
     this.viewsDir = path;
@@ -29,6 +32,7 @@ export class RenderService {
 
   /**
    * Set the default request handler provided by next
+   * @param handler
    */
   public setRequestHandler(handler: RequestHandler) {
     this.requestHandler = handler;
@@ -43,6 +47,7 @@ export class RenderService {
 
   /**
    * Set the render function provided by next
+   * @param renderer
    */
   public setRenderer(renderer: Renderer) {
     this.renderer = renderer;
@@ -57,6 +62,7 @@ export class RenderService {
 
   /**
    * Set nextjs error renderer
+   * @param errorRenderer
    */
   public setErrorRenderer(errorRenderer: ErrorRenderer) {
     this.errorRenderer = errorRenderer;
@@ -70,8 +76,24 @@ export class RenderService {
   }
 
   /**
+   * Set a custom error handler
+   * @param handler
+   */
+  public setErrorHandler(handler: ErrorHandler) {
+    this.errorHandler = handler;
+  }
+
+  /**
+   * Get the custom error handler
+   */
+  public getErrorHandler() {
+    return this.errorHandler;
+  }
+
+  /**
    * Bind to the render function for the HttpServer that nest is using and override
    * it to allow for next to render the page
+   * @param server
    */
   public bindHttpServer(server: HttpServer) {
     const renderer = this.getRenderer();
@@ -135,7 +157,16 @@ export class RenderService {
   }
 
   /**
+   * Check if the URL is internal to nextjs
+   * @param url
+   */
+  public isInternalUrl(url: string): boolean {
+    return isInternalUrl(url);
+  }
+
+  /**
    * Format the path to the view
+   * @param view
    */
   protected getViewPath(view: string) {
     const baseDir = this.getViewsDir();

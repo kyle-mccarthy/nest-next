@@ -18,15 +18,18 @@
     "publish:yarn": "yarn publish --access public"
   },
   "devDependencies": {
-    "@nestjs/common": "^5.6.2",
-    "@nestjs/core": "^5.6.2",
-    "@types/next": "^7.0.6",
-    "@types/node": "^10.12.18",
-    "next": "^7.0.2",
-    "prettier": "^1.15.3",
+    "@types/next": "^8.0.1",
+    "@types/node": "^11.10.4",
+    "prettier": "^1.16.4",
     "reflect-metadata": "^0.1.13",
-    "tslint": "^5.12.1",
-    "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.2"
+    "tslint": "^5.13.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "@nestjs/common": "^5.7.3",
+    "@nestjs/core": "^5.7.3",
+    "next": "^8.0.3",
+    "rxjs": "^6.4.0"
   }
 }

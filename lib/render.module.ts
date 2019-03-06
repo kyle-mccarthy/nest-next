@@ -29,12 +29,7 @@ export class RenderModule {
     this.service.setErrorRenderer(this.server.renderError.bind(this.server));
     this.service.bindHttpServer(this.app.getHttpAdapter());
 
-    this.app.useGlobalFilters(
-      new RenderFilter(
-        this.service.getRequestHandler()!,
-        this.service.getErrorRenderer()!,
-      ),
-    );
+    this.app.useGlobalFilters(new RenderFilter(this.service));
 
     if (options.viewsDir !== undefined) {
       this.service.setViewsDir(options.viewsDir);

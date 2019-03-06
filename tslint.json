@@ -2,6 +2,7 @@
   "extends": ["tslint:latest", "tslint-config-prettier"],
   "rules": {
     "interface-name": false,
-    "only-arrow-functions": false
+    "only-arrow-functions": false,
+    "no-submodule-imports": false
   }
 }

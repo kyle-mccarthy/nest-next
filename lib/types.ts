@@ -1,10 +1,12 @@
+import { ParsedUrlQuery } from 'querystring';
+
 export type RequestHandler = (req: any, res: any, query?: any) => Promise<void>;
 
 export type Renderer = (
   req: any,
   res: any,
   view: string,
-  params?: any
+  params?: any,
 ) => Promise<void>;
 
 export type ErrorRenderer = (
@@ -12,5 +14,13 @@ export type ErrorRenderer = (
   req: any,
   res: any,
   pathname: any,
-  query?: any
+  query?: any,
 ) => Promise<void>;
+
+export type ErrorHandler = (
+  err: any,
+  req: any,
+  res: any,
+  pathname: any,
+  query: ParsedUrlQuery,
+) => Promise<any>;
