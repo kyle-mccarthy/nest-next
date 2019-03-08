@@ -40,7 +40,10 @@ export class RenderFilter implements ExceptionFilter {
       }
 
       // let next handle the error
-      res.statusCode = err.status;
+      // it's possible that the err doesn't contain a status code, if this is the case treat
+      // it as an internal server error
+      res.statusCode = err && err.status ? err.status : 500;
+
       const { pathname, query } = parseUrl(req.url, true);
 
       const errorHandler = this.service.getErrorHandler();
