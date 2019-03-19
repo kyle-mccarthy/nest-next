@@ -3,7 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { FastifyAdapter } from '@nestjs/core';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { isInternalUrl } from './next-utils';
 import { ErrorHandler, ErrorRenderer, Renderer, RequestHandler } from './types';
 

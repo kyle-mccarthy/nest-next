@@ -18,18 +18,19 @@
     "publish:yarn": "yarn publish --access public"
   },
   "devDependencies": {
-    "@types/next": "^8.0.1",
-    "@types/node": "^11.10.4",
+    "@types/next": "^8.0.3",
+    "@types/node": "^11.11.3",
     "mermaid.cli": "^0.5.1",
     "prettier": "^1.16.4",
     "reflect-metadata": "^0.1.13",
-    "tslint": "^5.13.1",
+    "tslint": "^5.14.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "@nestjs/common": "^5.7.3",
-    "@nestjs/core": "^5.7.3",
+    "@nestjs/common": "^6.0.1",
+    "@nestjs/core": "^6.0.1",
+    "@nestjs/platform-fastify": "^6.0.1",
     "next": "^8.0.3",
     "rxjs": "^6.4.0"
   }
