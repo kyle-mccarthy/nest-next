@@ -20,43 +20,47 @@ export class RenderFilter implements ExceptionFilter {
   public async catch(err: any, ctx: ArgumentsHost) {
     const [request, response] = ctx.getArgs();
 
-    const requestHandler = this.service.getRequestHandler();
-    const errorRenderer = this.service.getErrorRenderer();
+    if (response && request) {
+      const requestHandler = this.service.getRequestHandler();
+      const errorRenderer = this.service.getErrorRenderer();
 
-    // these really should already always be set since it is done during the module registration
-    // if somehow they aren't throw an error
-    if (!requestHandler || !errorRenderer) {
-      throw new Error('Request and/or error renderer not set on RenderService');
-    }
-
-    const res: ServerResponse = response.res ? response.res : response;
-    const req: IncomingMessage = request.raw ? request.raw : request;
-
-    if (!res.headersSent && req.url) {
-      // check to see if the URL requested is an internal nextjs route
-      // if internal, the url is to some asset (ex /_next/*) that needs to be rendered by nextjs
-      if (this.service.isInternalUrl(req.url)) {
-        return requestHandler(req, res);
+      // these really should already always be set since it is done during the module registration
+      // if somehow they aren't throw an error
+      if (!requestHandler || !errorRenderer) {
+        throw new Error(
+          'Request and/or error renderer not set on RenderService',
+        );
       }
 
-      // let next handle the error
-      // it's possible that the err doesn't contain a status code, if this is the case treat
-      // it as an internal server error
-      res.statusCode = err && err.status ? err.status : 500;
+      const res: ServerResponse = response.res ? response.res : response;
+      const req: IncomingMessage = request.raw ? request.raw : request;
 
-      const { pathname, query } = parseUrl(req.url, true);
+      if (!res.headersSent && req.url) {
+        // check to see if the URL requested is an internal nextjs route
+        // if internal, the url is to some asset (ex /_next/*) that needs to be rendered by nextjs
+        if (this.service.isInternalUrl(req.url)) {
+          return requestHandler(req, res);
+        }
 
-      const errorHandler = this.service.getErrorHandler();
+        // let next handle the error
+        // it's possible that the err doesn't contain a status code, if this is the case treat
+        // it as an internal server error
+        res.statusCode = err && err.status ? err.status : 500;
 
-      if (errorHandler) {
-        await errorHandler(err, request, response, pathname, query);
+        const { pathname, query } = parseUrl(req.url, true);
+
+        const errorHandler = this.service.getErrorHandler();
+
+        if (errorHandler) {
+          await errorHandler(err, request, response, pathname, query);
+        }
+
+        if (response.sent === true || res.headersSent) {
+          return;
+        }
+
+        return errorRenderer(err, req, res, pathname, query);
       }
-
-      if (response.sent === true || res.headersSent) {
-        return;
-      }
-
-      return errorRenderer(err, req, res, pathname, query);
     }
   }
 }
