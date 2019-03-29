@@ -17,8 +17,10 @@ export class RenderFilter implements ExceptionFilter {
    * @param err
    * @param ctx
    */
-  public async catch(err: any, ctx: ArgumentsHost) {
-    const [request, response] = ctx.getArgs();
+  public async catch(err: any, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const request = ctx.getRequest();
+    const response = ctx.getResponse();
 
     if (response && request) {
       const requestHandler = this.service.getRequestHandler();
@@ -62,5 +64,8 @@ export class RenderFilter implements ExceptionFilter {
         return errorRenderer(err, req, res, pathname, query);
       }
     }
+
+    // if the request and/or response are undefined (as with GraphQL) rethrow the error
+    throw err;
   }
 }
