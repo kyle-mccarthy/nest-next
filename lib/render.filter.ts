@@ -63,6 +63,8 @@ export class RenderFilter implements ExceptionFilter {
 
         return errorRenderer(err, req, res, pathname, query);
       }
+
+      return;
     }
 
     // if the request and/or response are undefined (as with GraphQL) rethrow the error
