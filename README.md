@@ -3,7 +3,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
   - [Import and register the RenderModule](#import-and-register-the-rendermodule)
-    - [Default views/pages folder](#default-viewspages-folder)
+  - [Default Settings](#default-settings)
   - [Rendering Pages](#rendering-pages)
   - [Handling Errors](#handling-errors)
     - [Custom error handler](#custom-error-handler)
@@ -14,7 +14,9 @@
 
 ## Installation
 
+
     yarn add nest-next
+
 
 ## Usage
 
@@ -23,33 +25,46 @@
 In the `main.ts`, import Next and prepare it. Get the `RenderService` and register it by passing it the
 Nest application and next server.
 
-    const dev = process.env.NODE_ENV !== 'production';
-    const app = Next({ dev });
+```typescript
+const dev = process.env.NODE_ENV !== 'production';
+const app = Next({ dev });
 
-    await app.prepare();
+await app.prepare();
 
-    const server = await NestFactory.create(AppModule);
+const server = await NestFactory.create(AppModule);
 
-    const renderer = server.get(RenderModule);
-    renderer.register(server, app);
+const renderer = server.get(RenderModule);
+renderer.register(server, app);
 
-    await server.listen(process.env.PORT || 3000);
+await server.listen(process.env.PORT || 3000);
+```
 
 In the `application.module.ts` import the RenderModule.
 
-    import { Module } from '@nestjs/common';
-    import { RenderModule } from 'nest-next';
+```typescript
+import { Module } from '@nestjs/common';
+import { RenderModule } from 'nest-next';
 
-    @Module({
-      imports: [
-        RenderModule,
-        ...
-      ],
-      ....
-    })
-    export class AppModule {}
+@Module({
+  imports: [
+    RenderModule,
+    ...
+  ],
+  ....
+})
+export class AppModule {}
+```
 
-#### Default views/pages folder
+### Default Settings
+
+```typescript
+interface RenderOptions {
+  viewsDir: null | string;
+  dev: boolean;
+}
+```
+
+**Views/Pages Folder**
 
 By default the the renderer will serve pages from the `/pages/views` dir. Due to limitations with
 Next the `/pages` dir is not configurable, but the directory within the `/pages` dir is configurable.
@@ -58,9 +73,9 @@ The `register` method on the `RenderModule` takes an optional parameter `viewsDi
 folder inside of `pages` to render from. By default the value is `/views` but this can be changed or
 set to null to render from the root of `pages`.
 
-    interface RegisterOptions {
-      viewsDir: null | string;
-    }
+**Dev Mode**
+
+By default the dev mode will be set to true unless the NODE_ENV is production. Currently the dev mode determines how the errors should be serialized before being sent to next.
 
 ### Rendering Pages
 
@@ -68,41 +83,48 @@ The `RenderModule` overrides the Express/Fastify render. To render a page in you
 the Render decorator from `@nestjs/common` and add it to the method that will render the page. The
 path for the page is relative to the `/pages` directory.
 
-    import {
-      Controller,
-      Get,
-      Render,
-    } from '@nestjs/common';
+```typescript
+import {
+  Controller,
+  Get,
+  Render,
+} from '@nestjs/common';
 
-    @Controller()
-    export class AppController {
+@Controller()
+export class AppController {
 
-      @Get()
-      @Render('Index')
-      public index() {
-        // initial props
-        return {
-          title: 'Next with Nest',
-        };
-      }
-    }
+  @Get()
+  @Render('Index')
+  public index() {
+    // initial props
+    return {
+      title: 'Next with Nest',
+    };
+  }
+}
+```
 
 Additionally, the render function is made available on the res object.
 
-    @Controller()
-    export class AppController {
 
-      @Get()
-      public index(@Res() res) {
-        res.render('Index', {
-          title: 'Next with Nest',
-        });
-      }
-    }
+```typescript
+@Controller()
+export class AppController {
+
+  @Get()
+  public index(@Res() res) {
+    res.render('Index', {
+      title: 'Next with Nest',
+    });
+  }
+}
+```
 
 The render function takes in the view, as well as the initial props passed to the page.
 
-    render = (view: string, initialProps?: any) => any
+```typescript
+render = (view: string, initialProps?: any) => any
+```
 
 ### Handling Errors
 
@@ -185,27 +207,31 @@ Next renders pages from the pages directory. The Nest source code can remain in 
 
 To enable typescript and custom server support with Next the `next.config.js` file must be modified.
 
-    const withTypescript = require('@zeit/next-typescript');
+```typescript
+const withTypescript = require('@zeit/next-typescript');
 
-    module.exports = withTypescript({
-      useFileSystemPublicRoutes: false,
-    });
+module.exports = withTypescript({
+  useFileSystemPublicRoutes: false,
+});
+```
 
 **Babel**
 
 The .babelrc file must be edited as well.
 
-    {
-      "presets": ["next/babel", "@zeit/next-typescript/babel"],
-      "plugins": [
-        [
-          "@babel/plugin-proposal-decorators",
-          {
-            "legacy": true
-          }
-        ],
-      ],
-    }
+```json
+{
+  "presets": ["next/babel", "@zeit/next-typescript/babel"],
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+  ],
+}
+```
 
 ## By Example
 

@@ -24,3 +24,15 @@ export type ErrorHandler = (
   pathname: any,
   query: ParsedUrlQuery,
 ) => Promise<any>;
+
+export interface RendererConfig {
+  viewsDir: null | string;
+  dev: boolean;
+}
+
+export interface ErrorResponse {
+  name?: string;
+  message?: string;
+  stack?: any;
+  statusCode?: number;
+}

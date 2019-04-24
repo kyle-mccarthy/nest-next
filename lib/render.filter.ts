@@ -2,6 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { IncomingMessage, ServerResponse } from 'http';
 import { parse as parseUrl } from 'url';
 import { RenderService } from './render.service';
+import { ErrorResponse } from './types';
 
 @Catch()
 export class RenderFilter implements ExceptionFilter {
@@ -61,7 +62,9 @@ export class RenderFilter implements ExceptionFilter {
           return;
         }
 
-        return errorRenderer(err, req, res, pathname, query);
+        const serializedErr = this.serializeError(err);
+
+        return errorRenderer(serializedErr, req, res, pathname, query);
       }
 
       return;
@@ -69,5 +72,43 @@ export class RenderFilter implements ExceptionFilter {
 
     // if the request and/or response are undefined (as with GraphQL) rethrow the error
     throw err;
+  }
+
+  /**
+   * Serialize the error similarly to method used in Next -- parse error as Nest error type
+   * @param err
+   */
+  public serializeError(err: any): ErrorResponse {
+    const out: ErrorResponse = {};
+
+    if (!err) {
+      return out;
+    }
+
+    if (err.stack && this.service.isDev()) {
+      out.stack = err.stack;
+    }
+
+    if (err.response && typeof err.response === 'object') {
+      const { statusCode, error, message } = err.response;
+      out.statusCode = statusCode;
+      out.name = error;
+      out.message = message;
+    } else if (err.message && typeof err.message === 'object') {
+      const { statusCode, error, message } = err.message;
+      out.statusCode = statusCode;
+      out.name = error;
+      out.message = message;
+    }
+
+    if (!out.statusCode && err.status) {
+      out.statusCode = err.status;
+    }
+
+    if (!out.message && err.message) {
+      out.message = err.message;
+    }
+
+    return out;
   }
 }

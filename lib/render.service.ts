@@ -5,29 +5,66 @@ import {
 } from '@nestjs/common';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { isInternalUrl } from './next-utils';
-import { ErrorHandler, ErrorRenderer, Renderer, RequestHandler } from './types';
+import {
+  ErrorHandler,
+  ErrorRenderer,
+  Renderer,
+  RendererConfig,
+  RequestHandler,
+} from './types';
 
 @Injectable()
 export class RenderService {
   private requestHandler?: RequestHandler;
   private renderer?: Renderer;
   private errorRenderer?: ErrorRenderer;
-  private viewsDir: string | null = '/views';
   private errorHandler?: ErrorHandler;
+  private config: RendererConfig = {
+    dev: process.env.NODE_ENV !== 'production',
+    viewsDir: '/views',
+  };
+
+  /**
+   * Merge the default config with the config obj passed to method
+   * @param config
+   */
+  public mergeConfig(config: Partial<RendererConfig>) {
+    if (typeof config.dev === 'boolean') {
+      this.config.dev = config.dev;
+    }
+    if (typeof config.viewsDir === 'string' || config.viewsDir === null) {
+      this.config.viewsDir = config.viewsDir;
+    }
+  }
 
   /**
    * Set the directory that Next will render pages from
    * @param path
    */
   public setViewsDir(path: string | null) {
-    this.viewsDir = path;
+    this.config.viewsDir = path;
   }
 
   /**
    * Get the directory that Next renders pages from
    */
   public getViewsDir() {
-    return this.viewsDir;
+    return this.config.viewsDir;
+  }
+
+  /**
+   * Explicitly set if env is or not dev
+   * @param dev
+   */
+  public setIsDev(dev: boolean) {
+    this.config.dev = dev;
+  }
+
+  /**
+   * Get if the env is dev
+   */
+  public isDev(): boolean {
+    return this.config.dev!;
   }
 
   /**

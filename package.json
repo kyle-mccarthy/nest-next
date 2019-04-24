@@ -14,8 +14,8 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.json",
-    "prepublish:yarn": "yarn run build",
-    "publish:yarn": "yarn publish --access public"
+    "prepublish": "yarn run build",
+    "publish": "yarn publish --access public"
   },
   "devDependencies": {
     "@types/next": "^8.0.3",
