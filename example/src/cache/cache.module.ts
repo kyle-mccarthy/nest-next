@@ -1,5 +1,5 @@
 import { CacheModule as NestCacheModule, Global, Module } from '@nestjs/common';
-import { ConfigModule } from '@server/config/config.module';
+import { ConfigModule } from '../config/config.module';
 import { CacheConfigService } from './cache-config.service';
 import { CacheService } from './cache.service';
 

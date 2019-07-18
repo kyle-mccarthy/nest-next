@@ -1,9 +1,8 @@
-const withTypescript = require('@zeit/next-typescript');
 const path = require('path');
 
-module.exports = withTypescript({
+module.exports = {
   useFileSystemPublicRoutes: false,
-  webpack: function (config, { buildId, dev }) {
+  webpack: function(config, { buildId, dev }) {
     const originalEntry = config.entry;
 
     config.resolve = {
@@ -18,4 +17,4 @@ module.exports = withTypescript({
 
     return config
   }
-});
+};

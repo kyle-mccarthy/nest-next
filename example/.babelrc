@@ -12,7 +12,7 @@
         ],
         "alias": {
           "@src": "./pages",
-          "@server": "./.next/production-server"
+          "@server": "./.next/server"
         },
         "extensions": [
           ".ts",
