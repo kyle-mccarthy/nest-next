@@ -1,21 +1,22 @@
 import { INestApplication, Module } from '@nestjs/common';
-import { Server } from 'next';
+import  Server from 'next-server';
 import { RenderFilter } from './render.filter';
 import { RenderService } from './render.service';
 import { RendererConfig } from './types';
 
+type INestAppliactionSubset = Pick<INestApplication, 'getHttpAdapter' | 'useGlobalFilters'> & Partial<INestApplication>;
 @Module({
   providers: [RenderService],
 })
 export class RenderModule {
-  private app?: INestApplication;
-  private server?: Server;
+  private app?: INestAppliactionSubset;
+  private server?: ReturnType<typeof Server>;
 
   constructor(private readonly service: RenderService) {}
 
   public register(
-    app: INestApplication,
-    server: Server,
+    app: INestAppliactionSubset,
+    server: ReturnType<typeof Server>,
     options: Partial<RendererConfig> = {},
   ) {
     this.app = app;
