@@ -13,13 +13,14 @@
     "url": "https://github.com/kyle-mccarthy/nest-next.git"
   },
   "scripts": {
-    "build": "rm -rf ./dist && tsc -p tsconfig.json",
+    "build": "del-cli ./dist --force && tsc -p tsconfig.json",
     "prepublish": "yarn run build",
     "publish": "yarn publish --access public"
   },
   "devDependencies": {
     "@types/next": "^8.0.3",
     "@types/node": "^11.12.1",
+    "del-cli": "^2.0.0",
     "mermaid.cli": "^0.5.1",
     "prettier": "^1.16.4",
     "reflect-metadata": "^0.1.13",
@@ -31,7 +32,7 @@
     "@nestjs/common": "^6.0.4",
     "@nestjs/core": "^6.0.4",
     "@nestjs/platform-fastify": "^6.0.4",
-    "next": "^8.0.3",
+    "next-server": "^9.0.0",
     "rxjs": "^6.4.0"
   }
 }
