@@ -1,5 +1,7 @@
 import { CacheService, ICacheManager } from './cache.service';
 
+import 'jest';
+
 describe('CacheService', () => {
   let service: CacheService;
 

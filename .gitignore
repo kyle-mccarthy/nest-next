@@ -1,5 +1,7 @@
 node_modules
 dist
+.next
 yarn-error.log
 *.DS_Store
 *.lock
+package-lock.json

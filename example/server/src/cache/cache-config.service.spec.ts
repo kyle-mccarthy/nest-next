@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@server/config/config.service';
+import { ConfigService } from '../config/config.service';
 import { CacheConfigService } from './cache-config.service';
+
+import 'jest';
 
 const MockConfigService = jest.fn().mockImplementation(() => {
   return {

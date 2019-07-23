@@ -5,8 +5,8 @@ import {
   Render,
   UseInterceptors,
 } from '@nestjs/common';
+import { MessageContainer } from '../../shared/message';
 import { AppService } from './app.service';
-import { MessageContainer } from './types.shared';
 
 @Controller('/')
 // @UseInterceptors(CacheInterceptor)

@@ -9,7 +9,7 @@
     "alwaysStrict": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "outDir": ".next",
+    "outDir": "../server/.next",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -18,12 +18,13 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "lib": [
-      "es2017"
+      "es2017",
+      "dom"
     ],
     "baseUrl": ".",
     "paths": {
       "@server/*": [
-        "src/*"
+        "../server/src/*"
       ],
       "@src/*": [
         "pages/*"
@@ -39,10 +40,10 @@
     "isolatedModules": true
   },
   "exclude": [
-    "node_modules"
+      "../server/node_modules"
   ],
   "include": [
-    "next-env.d.ts",
+      "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ]

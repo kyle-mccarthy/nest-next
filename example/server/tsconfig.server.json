@@ -1,9 +1,9 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../client/tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
     "allowJs": false,
-    "outDir": ".next/production-server",
+    "outDir": "dist",
     "isolatedModules": false,
     "declaration": true,
     "target": "es6",

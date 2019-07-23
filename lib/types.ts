@@ -28,6 +28,7 @@ export type ErrorHandler = (
 export interface RendererConfig {
   viewsDir: null | string;
   dev: boolean;
+  useErrorHandler: boolean | RegExp;
 }
 
 export interface ErrorResponse {

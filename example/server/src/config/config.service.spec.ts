@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from './config.service';
 
+import 'jest';
+
 describe('ConfigService', () => {
   let service: ConfigService;
   beforeAll(async () => {

@@ -1,4 +1,5 @@
-import { INestApplication, Module } from '@nestjs/common';
+import { INestApplication, Inject, Module } from '@nestjs/common';
+import { RequestHandler } from '@nestjs/common/interfaces';
 import  Server from 'next-server';
 import { RenderFilter } from './render.filter';
 import { RenderService } from './render.service';
@@ -28,6 +29,8 @@ export class RenderModule {
     this.service.setErrorRenderer(this.server.renderError.bind(this.server));
     this.service.bindHttpServer(this.app.getHttpAdapter());
 
-    this.app.useGlobalFilters(new RenderFilter(this.service));
+    if (typeof options.useErrorHandler === 'undefined' || options.useErrorHandler) {
+      this.app.useGlobalFilters(new RenderFilter(this.service));
+    }
   }
 }

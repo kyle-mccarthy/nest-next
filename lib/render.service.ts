@@ -19,8 +19,10 @@ export class RenderService {
   private renderer?: Renderer;
   private errorRenderer?: ErrorRenderer;
   private errorHandler?: ErrorHandler;
+  private httpServer?: HttpServer;
   private config: RendererConfig = {
     dev: process.env.NODE_ENV !== 'production',
+    useErrorHandler: true,
     viewsDir: '/views',
   };
 
@@ -29,12 +31,23 @@ export class RenderService {
    * @param config
    */
   public mergeConfig(config: Partial<RendererConfig>) {
-    if (typeof config.dev === 'boolean') {
-      this.config.dev = config.dev;
-    }
-    if (typeof config.viewsDir === 'string' || config.viewsDir === null) {
-      this.config.viewsDir = config.viewsDir;
-    }
+    Object.assign(this.config, config);
+  }
+
+  /**
+   * Set the filter for when to use the error handler.
+   *
+   * @param filter
+   */
+  public setUseErrorHandler(filter: boolean | RegExp) {
+    this.config.useErrorHandler = filter;
+  }
+
+  /**
+   * Get the current error handler filter.
+   */
+  public getUseErrorHandler() {
+    return this.config.useErrorHandler;
   }
 
   /**
@@ -133,6 +146,7 @@ export class RenderService {
    * @param server
    */
   public bindHttpServer(server: HttpServer) {
+    this.httpServer = server;
     const renderer = this.getRenderer();
     const getViewPath = this.getViewPath.bind(this);
 
@@ -193,12 +207,8 @@ export class RenderService {
     }
   }
 
-  /**
-   * Check if the URL is internal to nextjs
-   * @param url
-   */
-  public isInternalUrl(url: string): boolean {
-    return isInternalUrl(url);
+  public getHttpServer() {
+    return this.httpServer;
   }
 
   /**
