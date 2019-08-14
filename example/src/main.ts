@@ -8,8 +8,6 @@ async function bootstrap() {
   const dev = process.env.NODE_ENV !== 'production';
   const app = Next({ dev });
 
-  console.log(`dev=${dev}`);
-
   await app.prepare();
 
   const server = await NestFactory.create(AppModule);
