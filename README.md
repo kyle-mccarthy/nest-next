@@ -1,5 +1,9 @@
 # NestJS NextJS Integration <!-- omit in toc -->
 
+[![npm](https://img.shields.io/npm/v/nest-next?style=flat-square)](https://www.npmjs.com/package/nest-next)
+
+---
+
 <!-- vim-markdown-toc GFM -->
 
 * [Installation](#installation)
@@ -17,6 +21,8 @@
 * [By Example](#by-example)
 
 <!-- vim-markdown-toc -->
+
+---
 
 ## Installation
 
