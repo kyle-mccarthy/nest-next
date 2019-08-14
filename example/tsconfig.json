@@ -18,19 +18,13 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "lib": [
-      "es2017"
+      "es2017",
+      "dom"
     ],
     "baseUrl": ".",
-    "paths": {
-      "@server/*": [
-        "src/*"
-      ],
-      "@src/*": [
-        "pages/*"
-      ]
-    },
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "./typings"
     ],
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
@@ -38,12 +32,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
+  "include": [
+    "./pages/**/*",
+    "./src/**/*",
+    "./ui/**/*"
+  ],
   "exclude": [
     "node_modules"
-  ],
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
   ]
 }

@@ -1,20 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { RenderModule } from 'nest-next';
 import Next from 'next';
-import { AppModule } from './app.module';
+import 'reflect-metadata';
+import { AppModule } from './application.module';
 
 async function bootstrap() {
-  const dev = process.env.NODE_ENV !== 'production';
-  const app = Next({ dev });
+  const app = Next({ dev: true });
 
   await app.prepare();
 
   const server = await NestFactory.create(AppModule);
 
   const renderer = server.get(RenderModule);
-  renderer.register(server, app, {viewsDir: null });
+  renderer.register(server, app);
 
-  await server.listen(process.env.PORT || 3000);
+  await server.listen(3000);
 }
 
 bootstrap();

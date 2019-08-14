@@ -1,73 +1,30 @@
 {
-  "name": "nest-next-app",
+  "name": "nestnext8",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Kyle McCarthy",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/main.ts",
-    "build:clean": "del-cli .next --force",
-    "build:server": "npx tsc --project tsconfig.server.json && npx babel .next/production-server -d .next/production-server --config-file ./.babelrc-server --extensions \".js\"",
-    "build:ui": "npx next build",
-    "build": "yarn build:clean && yarn build:ui && yarn build:server",
-    "start": "cross-env NODE_ENV=production node --require reflect-metadata .next/production-server/main.js"
+    "start": "nodemon src/main.ts"
   },
   "dependencies": {
-    "@babel/core": "^7.1.0",
-    "@nestjs/common": "^6.0.4",
-    "@nestjs/core": "^6.0.4",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@nestjs/common": "^6.5.3",
+    "@nestjs/core": "^6.5.3",
     "@nestjs/platform-express": "^6.5.3",
-    "cache-manager": "^2.9.0",
-    "dotenv": "^6.1.0",
-    "joi": "^14.0.0",
-    "nest-next": "file:../",
-    "next": "9",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "reflect-metadata": "^0.1.12",
-    "rxjs": "^6.3.2",
-    "tslint-react": "^3.6.0"
+    "nest-next": "file:.yalc/nest-next",
+    "next": "^9.0.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.5.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.0",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/plugin-proposal-decorators": "^7.1.0",
-    "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-typescript": "^7.1.0",
-    "@nestjs/testing": "^6.0.4",
-    "@types/dotenv": "^4.0.3",
-    "@types/jest": "^23.3.5",
-    "@types/joi": "^13.6.1",
-    "@types/next": "^6.1.8",
-    "@types/node": "^12.6.8",
-    "@types/react": "^16.8.23",
-    "@types/react-dom": "^16.8.4",
-    "@zeit/next-typescript": "^1.1.1",
-    "babel-plugin-module-resolver": "^3.1.1",
-    "cross-env": "^5.2.0",
-    "del-cli": "^2.0.0",
-    "jest": "^23.6.0",
-    "nodemon": "^1.18.8",
-    "ts-jest": "^23.10.4",
-    "ts-node": "^7.0.1",
-    "tsconfig-paths": "^3.6.0",
-    "tslint": "^5.11.0",
-    "typescript": "^3.0.3"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "^@server/(.*)$": "<rootDir>/src/$1"
-    },
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": ".",
-    "testRegex": ".spec.ts$",
-    "coverageDirectory": "./coverage",
-    "preset": "ts-jest/presets/js-with-ts",
-    "testMatch": null
+    "@types/node": "^12.7.1",
+    "@types/react": "^16.9.1"
   }
 }

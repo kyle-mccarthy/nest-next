@@ -1,4 +1,3 @@
 .next
-node_modules
-.vscode
 .yalc
+node_modules

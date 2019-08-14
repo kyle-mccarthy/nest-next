@@ -1,37 +1,10 @@
-import {
-  CacheInterceptor,
-  Controller,
-  Get,
-  Render,
-  UseInterceptors,
-} from '@nestjs/common';
-import { AppService } from './app.service';
-import { MessageContainer } from './types.shared';
+import { Controller, Get, Query, Render } from '@nestjs/common';
 
-@Controller('/')
-// @UseInterceptors(CacheInterceptor)
+@Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get('api')
-  public rootFetch(): MessageContainer {
-    return this.appService.root();
-  }
-
+  @Render('Index')
   @Get()
-  @Render('index')
-  public root(): MessageContainer {
-    return this.appService.root();
-  }
-
-  @Get('api/about')
-  public aboutFetch(): MessageContainer {
-    return this.appService.root();
-  }
-
-  @Get('about')
-  @Render('about')
-  public about(): MessageContainer {
-    return this.appService.root();
+  public index(@Query('name') name?: string) {
+    return { name };
   }
 }

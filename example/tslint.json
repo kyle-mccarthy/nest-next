@@ -1,34 +1,22 @@
 {
   "extends": [
     "tslint:recommended",
-    "tslint-react"
+    "tslint-react",
+    "tslint-config-prettier",
+    "tslint-react-hooks"
   ],
   "rules": {
-    "quotemark": [
-      true,
-      "single",
-      "jsx-double"
-    ],
-    "semicolon": [
-      true,
-      "always"
-    ],
-    "trailing-comma": [
-      true,
-      {
-        "singleline": "never",
-        "multiline": {
-          "objects": "always",
-          "arrays": "always",
-          "functions": "never",
-          "typeLiterals": "ignore"
-        },
-        "esSpecCompliant": true
-      }
-    ],
+    "quotemark": [true, "single", "jsx-double"],
+    "semicolon": [true, "always"],
+    "trailing-comma": [true],
     "object-literal-sort-keys": false,
     "no-unused-variable": true,
     "interface-name": false,
-    "no-empty-interface": false
+    "no-empty-interface": false,
+    "jsx-no-multiline-js": false,
+    "jsx-no-target-blank": false,
+    "no-shadowed-variable": [true, { "temporalDeadZone": false }],
+    "member-ordering": [true, { "order": "fields-first" }],
+    "react-hooks-nesting": "warning"
   }
 }
