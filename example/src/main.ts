@@ -5,7 +5,10 @@ import 'reflect-metadata';
 import { AppModule } from './application.module';
 
 async function bootstrap() {
-  const app = Next({ dev: true });
+  const dev = process.env.NODE_ENV !== 'production';
+  const app = Next({ dev });
+
+  console.log(`dev=${dev}`);
 
   await app.prepare();
 

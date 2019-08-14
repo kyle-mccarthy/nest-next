@@ -1,16 +1,22 @@
 # NestJS NextJS Integration <!-- omit in toc -->
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Import and register the RenderModule](#import-and-register-the-rendermodule)
-  - [Default Settings](#default-settings)
-  - [Rendering Pages](#rendering-pages)
-  - [Handling Errors](#handling-errors)
-    - [Custom error handler](#custom-error-handler)
-    - [Error Flow (Diagram)](#error-flow-diagram)
-  - [Example folder structure](#example-folder-structure)
-- [Configuring Next](#configuring-next)
-- [By Example](#by-example)
+<!-- vim-markdown-toc GFM -->
+
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Import and register the RenderModule](#import-and-register-the-rendermodule)
+    * [Default Settings](#default-settings)
+    * [Rendering Pages](#rendering-pages)
+    * [Handling Errors](#handling-errors)
+        * [Custom error handler](#custom-error-handler)
+        * [Error Flow (Diagram)](#error-flow-diagram)
+    * [Example folder structure](#example-folder-structure)
+* [Configuring Next](#configuring-next)
+* [tsconfig.json](#tsconfigjson)
+* [Versioning](#versioning)
+* [By Example](#by-example)
+
+<!-- vim-markdown-toc -->
 
 ## Installation
 
@@ -26,17 +32,28 @@ In the `main.ts`, import Next and prepare it. Get the `RenderService` and regist
 Nest application and next server.
 
 ```typescript
-const dev = process.env.NODE_ENV !== 'production';
-const app = Next({ dev });
+import { NestFactory } from '@nestjs/core';
+import { RenderModule } from 'nest-next';
+import Next from 'next';
+import 'reflect-metadata';
+import { AppModule } from './application.module';
 
-await app.prepare();
+async function bootstrap() {
+  const dev = process.env.NODE_ENV !== 'production';
+  const app = Next({ dev });
 
-const server = await NestFactory.create(AppModule);
+  await app.prepare();
 
-const renderer = server.get(RenderModule);
-renderer.register(server, app);
+  const server = await NestFactory.create(AppModule);
 
-await server.listen(process.env.PORT || 3000);
+  const renderer = server.get(RenderModule);
+  renderer.register(server, app);
+
+  await server.listen(process.env.PORT || 3000);
+}
+
+bootstrap();
+
 ```
 
 In the `application.module.ts` import the RenderModule.
@@ -193,26 +210,28 @@ Next renders pages from the pages directory. The Nest source code can remain in 
         /Index.jsx
     /components
       ...
+    babel.config.js
     next.config.js
-    .babelrc
-    .babelrc-server
+    nodemon.json
+    tsconfig.json
+    tsconfig.server.json
+
 
 ## Configuring Next
 
 **Required Dependencies**
 
-- `@zeit/next-typescript`
+- `react`
+- `react-dom`
 
 **Next Config**
 
-To enable typescript and custom server support with Next the `next.config.js` file must be modified.
+As on Next 9, typescript is automatically supported, but the file system routing must be disabled. 
 
 ```typescript
-const withTypescript = require('@zeit/next-typescript');
-
-module.exports = withTypescript({
+module.exports = {
   useFileSystemPublicRoutes: false,
-});
+};
 ```
 
 **Babel**
@@ -221,17 +240,20 @@ The .babelrc file must be edited as well.
 
 ```json
 {
-  "presets": ["next/babel", "@zeit/next-typescript/babel"],
-  "plugins": [
-    [
-      "@babel/plugin-proposal-decorators",
-      {
-        "legacy": true
-      }
-    ],
-  ],
+  "presets": ["next/babel"],
 }
 ```
+
+## tsconfig.json
+
+Next 9 added [built-in zero-config typescript support](https://nextjs.org/blog/next-9#built-in-zero-config-typescript-support). This change is great in general, but next requires specific settings in the tsconfig which are incompatible with what are needed for the server. However, these settings can easily be overridden in the `tsconfig.server.json` file.
+
+If you are having issues with unexpected tokens, files not emitting when building for production, warnings about `allowJs` and `declaration` not being used together, and other typescript related errors; see the `tsconfig.server.json` [file in the example project](/example/tsconfig.server.json) for the full config.
+
+## Versioning
+
+The major version of `nest-next` corresponds to the major version of `next`.
+
 
 ## By Example
 

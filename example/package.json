@@ -4,7 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/main.ts"
+    "dev": "nodemon src/main.ts",
+    "build:clean": "rm -rf .next",
+    "build:ui": "npx next build",
+    "build:server": "npx tsc --project tsconfig.server.json && npx babel .next/production-server -d .next/production-server --extensions \".js\"",
+    "build": "yarn build:clean && yarn build:ui && yarn build:server",
+    "start": "NODE_ENV=production node .next/production-server/main.js"
   },
   "dependencies": {
     "@babel/cli": "^7.5.5",
@@ -14,7 +19,7 @@
     "@nestjs/common": "^6.5.3",
     "@nestjs/core": "^6.5.3",
     "@nestjs/platform-express": "^6.5.3",
-    "nest-next": "file:.yalc/nest-next",
+    "nest-next": "^0.7.0",
     "next": "^9.0.3",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
