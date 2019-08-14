@@ -1,32 +1,25 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "commonjs",
-    "jsx": "react",
+    "module": "esnext",
+    "jsx": "preserve",
     "strict": true,
     "pretty": true,
-    
     "noImplicitAny": true,
     "alwaysStrict": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    
     "outDir": ".next",
     "moduleResolution": "node",
-
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-
     "sourceMap": true,
     "skipLibCheck": true,
-
     "lib": [
       "es2017"
     ],
-
     "baseUrl": ".",
     "paths": {
       "@server/*": [
@@ -36,12 +29,21 @@
         "pages/*"
       ]
     },
-
     "typeRoots": [
       "node_modules/@types"
-    ]
+    ],
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "exclude": [
     "node_modules"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
   ]
 }

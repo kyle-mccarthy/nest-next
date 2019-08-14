@@ -5,7 +5,7 @@ describe('CacheService', () => {
 
   let store: any = {};
 
-  const Manager = jest.fn<ICacheManager>().mockImplementation(() => {
+  const Manager = jest.fn().mockImplementation(() => {
     return {
       get: jest.fn((key: string) => store[key]),
       set: jest.fn((key: string, value: any, options?: { ttl: number }) => {
