@@ -1,6 +1,6 @@
 {
   "name": "nest-next",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "Nestjs module to allow for server side rendering with Nextjs",
   "author": "Kyle McCarthy",
   "license": "MIT",
@@ -18,21 +18,20 @@
     "publish": "yarn publish --access public"
   },
   "devDependencies": {
-    "@types/next": "^8.0.3",
-    "@types/node": "^11.12.1",
-    "del-cli": "^2.0.0",
-    "mermaid.cli": "^0.5.1",
-    "prettier": "^1.16.4",
-    "reflect-metadata": "^0.1.13",
-    "tslint": "^5.14.0",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.4000"
+    "@types/node": "^11.12",
+    "del-cli": "^2.0",
+    "mermaid.cli": "^0.5",
+    "prettier": "^1.16",
+    "reflect-metadata": "^0.1",
+    "tslint": "^5.14",
+    "tslint-config-prettier": "^1.18",
+    "typescript": "^3.3"
   },
   "dependencies": {
-    "@nestjs/common": "^6.0.4",
-    "@nestjs/core": "^6.0.4",
-    "@nestjs/platform-fastify": "^6.0.4",
-    "next-server": "^9.0.0",
-    "rxjs": "^6.4.0"
+    "@nestjs/common": "^6.0",
+    "@nestjs/core": "^6.0",
+    "@nestjs/platform-fastify": "^6.0",
+    "next-server": "^9.0",
+    "rxjs": "^6.4"
   }
 }
