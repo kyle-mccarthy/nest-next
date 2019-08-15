@@ -12,10 +12,6 @@
     "start": "NODE_ENV=production node .next/production-server/main.js"
   },
   "dependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-proposal-decorators": "^7.4.4",
     "@nestjs/common": "^6.5.3",
     "@nestjs/core": "^6.5.3",
     "@nestjs/platform-express": "^6.5.3",
@@ -24,12 +20,14 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.5.2",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "rxjs": "^6.5.2"
   },
   "devDependencies": {
     "@types/node": "^12.7.1",
-    "@types/react": "^16.9.1"
+    "@types/react": "^16.9.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5"
   }
 }
