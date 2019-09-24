@@ -1,10 +1,14 @@
 import { INestApplication, Module } from '@nestjs/common';
-import  Server from 'next-server';
+import Server from 'next';
 import { RenderFilter } from './render.filter';
 import { RenderService } from './render.service';
 import { RendererConfig } from './types';
 
-type INestAppliactionSubset = Pick<INestApplication, 'getHttpAdapter' | 'useGlobalFilters'> & Partial<INestApplication>;
+type INestAppliactionSubset = Pick<
+  INestApplication,
+  'getHttpAdapter' | 'useGlobalFilters'
+> &
+  Partial<INestApplication>;
 @Module({
   providers: [RenderService],
 })
