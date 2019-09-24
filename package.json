@@ -31,7 +31,7 @@
     "@nestjs/common": "^6.0",
     "@nestjs/core": "^6.0",
     "@nestjs/platform-fastify": "^6.0",
-    "next-server": "^9.0",
+    "next": "^9.0",
     "rxjs": "^6.4"
   }
 }
