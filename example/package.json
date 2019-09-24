@@ -15,7 +15,7 @@
     "@nestjs/common": "^6.5.3",
     "@nestjs/core": "^6.5.3",
     "@nestjs/platform-express": "^6.5.3",
-    "nest-next": "9.0.0-beta.0",
+    "nest-next": "^9.0.6",
     "next": "^9.0.3",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
@@ -23,11 +23,11 @@
     "rxjs": "^6.5.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
     "@types/node": "^12.7.1",
     "@types/react": "^16.9.1",
     "ts-node": "^8.3.0",
-    "typescript": "^3.5.3",
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5"
+    "typescript": "^3.5.3"
   }
 }
