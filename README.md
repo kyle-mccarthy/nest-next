@@ -230,26 +230,6 @@ Next renders pages from the pages directory. The Nest source code can remain in 
 - `react`
 - `react-dom`
 
-**Next Config**
-
-As on Next 9, typescript is automatically supported, but the file system routing must be disabled. 
-
-```typescript
-module.exports = {
-  useFileSystemPublicRoutes: false,
-};
-```
-
-**Babel**
-
-The .babelrc file must be edited as well.
-
-```json
-{
-  "presets": ["next/babel"],
-}
-```
-
 ## tsconfig.json
 
 Next 9 added [built-in zero-config typescript support](https://nextjs.org/blog/next-9#built-in-zero-config-typescript-support). This change is great in general, but next requires specific settings in the tsconfig which are incompatible with what are needed for the server. However, these settings can easily be overridden in the `tsconfig.server.json` file.
@@ -260,8 +240,8 @@ If you are having issues with unexpected tokens, files not emitting when buildin
 
 The major version of `nest-next` corresponds to the major version of `next`.
 
-
 ## By Example
 
 A fully setup project with some additional things (.env, caching) can be viewed in
 the [example folder](/example)
+
