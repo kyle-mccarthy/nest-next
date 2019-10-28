@@ -2,12 +2,18 @@ import { ParsedUrlQuery } from 'querystring';
 
 export type RequestHandler = (req: any, res: any, query?: any) => Promise<void>;
 
-export type Renderer = (
+export type Renderer<DataType extends ParsedUrlQuery = ParsedUrlQuery> = (
   req: any,
   res: any,
   view: string,
-  params?: any,
+  params?: DataType,
 ) => Promise<void>;
+
+export interface RenderableResponse<
+  DataType extends ParsedUrlQuery = ParsedUrlQuery
+> {
+  render(view: string, data?: DataType): ReturnType<Renderer<DataType>>;
+}
 
 export type ErrorRenderer = (
   err: any,

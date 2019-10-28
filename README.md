@@ -135,7 +135,7 @@ Additionally, the render function is made available on the res object.
 export class AppController {
 
   @Get()
-  public index(@Res() res) {
+  public index(@Res() res: RenderableResponse) {
     res.render('Index', {
       title: 'Next with Nest',
     });
