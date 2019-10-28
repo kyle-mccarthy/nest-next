@@ -15,7 +15,7 @@
   "scripts": {
     "build": "del-cli ./dist --force && tsc -p tsconfig.json",
     "prepublish": "yarn run build",
-    "publish": "yarn publish --access public"
+    "publish-public": "yarn publish --access public"
   },
   "devDependencies": {
     "@types/node": "^11.12",
