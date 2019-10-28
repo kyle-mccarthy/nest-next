@@ -4,10 +4,12 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { ParsedUrlQuery } from 'querystring';
 import { isInternalUrl } from './next-utils';
 import {
   ErrorHandler,
   ErrorRenderer,
+  RenderableResponse,
   Renderer,
   RendererConfig,
   RequestHandler,
@@ -165,7 +167,7 @@ export class RenderService {
     if (server instanceof FastifyAdapter) {
       server
         .getInstance()
-        .decorateReply('render', function(view: string, data?: any) {
+        .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
           const res = this.res;
           const req = this.request.raw;
 
@@ -176,17 +178,17 @@ export class RenderService {
           }
 
           return renderer(req, res, getViewPath(view), data);
-        });
+        } as RenderableResponse['render']);
     } else {
       server.getInstance().use((req: any, res: any, next: () => any) => {
-        res.render = (view: string, data?: any) => {
+        res.render = ((view: string, data?: ParsedUrlQuery) => {
           if (!renderer) {
             throw new InternalServerErrorException(
               'RenderService: renderer is not set',
             );
           }
           return renderer(req, res, getViewPath(view), data);
-        };
+        }) as RenderableResponse['render'];
 
         next();
       });
