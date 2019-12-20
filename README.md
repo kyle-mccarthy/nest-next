@@ -203,7 +203,8 @@ _The image is linked to a larger version_
 
 [![error filter sequence diagram](./docs/out/error-filter-sequence-sm.png)](./docs/out/error-filter-sequence.png)
 
-### Example folder structure
+## Examples folder structure
+### Aggregated
 
 Next renders pages from the pages directory. The Nest source code can remain in the default `/src` folder
 
@@ -222,6 +223,33 @@ Next renders pages from the pages directory. The Nest source code can remain in 
     tsconfig.json
     tsconfig.server.json
 
+
+## Segregated
+
+Next renders pages from the pages directory in the "ui" subproject. The Nest project is in the "server" folder.
+In order to make the properties type safe between the "ui" and "server" projects, there is a folder called "dto"
+outside of both projects. Changes in it during "dev" runs trigger recompilation of both projects.
+
+    /server
+      /src
+        /main.ts
+        /app.module.ts
+        /app.controller.ts
+      nodemon.json
+      tsconfig.json
+      ...
+    /ui
+      /pages
+        /index.tsx
+        /about.tsx
+      next-env.d.ts
+      tsconfig.json
+      ...
+    /dto
+      /src
+        /AboutPage.ts
+        /IndexPage.ts
+      package.json
 
 ## Configuring Next
 
@@ -242,6 +270,5 @@ The major version of `nest-next` corresponds to the major version of `next`.
 
 ## By Example
 
-A fully setup project with some additional things (.env, caching) can be viewed in
-the [example folder](/example)
+Fully setup projects can be viewed in the [examples folder](/examples)
 

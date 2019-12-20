@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2019",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  },
+  "exclude": ["node_modules", "./dist"],
+  "include": ["./src/**/*.ts"],
+  "files": ["./src/main.ts"],
+  "references": [
+    {
+      "path": "../dto"
+    }
+  ]
+}
