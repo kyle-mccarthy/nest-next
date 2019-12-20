@@ -5,16 +5,17 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/main.ts",
-    "build:clean": "rm -rf .next",
+    "build:clean": "rimraf .next",
     "build:ui": "npx next build",
     "build:server": "npx tsc --project tsconfig.server.json && npx babel .next/production-server -d .next/production-server --extensions \".js\"",
     "build": "yarn build:clean && yarn build:ui && yarn build:server",
-    "start": "NODE_ENV=production node .next/production-server/main.js"
+    "start": "cross-env NODE_ENV=production node .next/production-server/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^6.5.3",
     "@nestjs/core": "^6.5.3",
     "@nestjs/platform-express": "^6.5.3",
+    "cross-env": "^6.0.3",
     "nest-next": "^9.1.0",
     "next": "^9.0.3",
     "react": "^16.9.0",
@@ -27,6 +28,7 @@
     "@babel/core": "^7.5.5",
     "@types/node": "^12.7.1",
     "@types/react": "^16.9.1",
+    "rimraf": "^3.0.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }
