@@ -8,13 +8,15 @@
 
 * [Installation](#installation)
 * [Usage](#usage)
-    * [Import and register the RenderModule](#import-and-register-the-rendermodule)
-    * [Default Settings](#default-settings)
-    * [Rendering Pages](#rendering-pages)
-    * [Handling Errors](#handling-errors)
-        * [Custom error handler](#custom-error-handler)
-        * [Error Flow (Diagram)](#error-flow-diagram)
-    * [Example folder structure](#example-folder-structure)
+  * [Import and register the RenderModule](#import-and-register-the-rendermodule)
+  * [Default Settings](#default-settings)
+  * [Rendering Pages](#rendering-pages)
+  * [Handling Errors](#handling-errors)
+    * [Custom error handler](#custom-error-handler)
+    * [Error Flow (Diagram)](#error-flow-diagram)
+* [Examples folder structure](#examples-folder-structure)
+  * [Basic Setup](#basic-setup)
+  * [Monorepo](#monorepo)
 * [Configuring Next](#configuring-next)
 * [tsconfig.json](#tsconfigjson)
 * [Versioning](#versioning)
@@ -204,7 +206,7 @@ _The image is linked to a larger version_
 [![error filter sequence diagram](./docs/out/error-filter-sequence-sm.png)](./docs/out/error-filter-sequence.png)
 
 ## Examples folder structure
-### Aggregated
+### Basic Setup
 
 Next renders pages from the pages directory. The Nest source code can remain in the default `/src` folder
 
@@ -224,7 +226,7 @@ Next renders pages from the pages directory. The Nest source code can remain in 
     tsconfig.server.json
 
 
-## Segregated
+### Monorepo
 
 Next renders pages from the pages directory in the "ui" subproject. The Nest project is in the "server" folder.
 In order to make the properties type safe between the "ui" and "server" projects, there is a folder called "dto"
