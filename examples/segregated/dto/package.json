@@ -1,0 +1,14 @@
+{
+  "name": "next-nest-example-advanced-dto",
+  "version": "1.0.0",
+  "description": "The DTO portion of an advanced example using nest-next",
+  "license": "MIT",
+  "devDependencies": {
+    "rimraf": "^3.0.0",
+    "typescript": "^3.7.3"
+  },
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "build": "tsc -b"
+  }
+}

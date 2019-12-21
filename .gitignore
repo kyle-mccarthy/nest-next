@@ -3,3 +3,4 @@ dist
 yarn-error.log
 *.DS_Store
 *.lock
+*-lock.json
