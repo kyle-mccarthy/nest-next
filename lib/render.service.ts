@@ -1,9 +1,7 @@
 import {
   HttpServer,
-  Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { ParsedUrlQuery } from 'querystring';
 import { isInternalUrl } from './next-utils';
 import {
@@ -15,16 +13,29 @@ import {
   RequestHandler,
 } from './types';
 
-@Injectable()
 export class RenderService {
-  private requestHandler?: RequestHandler;
-  private renderer?: Renderer;
-  private errorRenderer?: ErrorRenderer;
+  private requestHandler: RequestHandler;
+  private renderer: Renderer;
+  private errorRenderer: ErrorRenderer;
   private errorHandler?: ErrorHandler;
   private config: RendererConfig = {
     dev: process.env.NODE_ENV !== 'production',
     viewsDir: '/views',
   };
+
+  constructor(
+    config: Partial<RendererConfig>,
+    handler: RequestHandler,
+    renderer: Renderer,
+    errorRenderer: ErrorRenderer,
+    server: HttpServer
+  ) {
+    this.mergeConfig(config);
+    this.requestHandler = handler;
+    this.renderer = renderer;
+    this.errorRenderer = errorRenderer;
+    this.bindHttpServer(server);
+  }
 
   /**
    * Merge the default config with the config obj passed to method
@@ -80,7 +91,7 @@ export class RenderService {
   /**
    * Get the default request handler
    */
-  public getRequestHandler(): RequestHandler | undefined {
+  public getRequestHandler(): RequestHandler {
     return this.requestHandler;
   }
 
@@ -95,7 +106,7 @@ export class RenderService {
   /**
    * Get the render function provided by next
    */
-  public getRenderer(): Renderer | undefined {
+  public getRenderer(): Renderer {
     return this.renderer;
   }
 
@@ -110,7 +121,7 @@ export class RenderService {
   /**
    * Get nextjs error renderer
    */
-  public getErrorRenderer(): ErrorRenderer | undefined {
+  public getErrorRenderer(): ErrorRenderer {
     return this.errorRenderer;
   }
 
@@ -125,8 +136,16 @@ export class RenderService {
   /**
    * Get the custom error handler
    */
-  public getErrorHandler() {
+  public getErrorHandler(): ErrorHandler | undefined {
     return this.errorHandler;
+  }
+
+  /**
+   * Check if the URL is internal to nextjs
+   * @param url
+   */
+  public isInternalUrl(url: string): boolean {
+    return isInternalUrl(url);
   }
 
   /**
@@ -134,7 +153,7 @@ export class RenderService {
    * it to allow for next to render the page
    * @param server
    */
-  public bindHttpServer(server: HttpServer) {
+  protected bindHttpServer(server: HttpServer) {
     const renderer = this.getRenderer();
     const getViewPath = this.getViewPath.bind(this);
 
@@ -144,12 +163,8 @@ export class RenderService {
       const res = isFastify ? response.res : response;
       const req = isFastify ? response.request.raw : response.req;
 
-      if (req && res && renderer) {
+      if (req && res) {
         return renderer(req, res, getViewPath(view), data);
-      } else if (!renderer) {
-        throw new InternalServerErrorException(
-          'RenderService: renderer is not set',
-        );
       } else if (!res) {
         throw new InternalServerErrorException(
           'RenderService: could not get the response',
@@ -163,44 +178,33 @@ export class RenderService {
       throw new Error('RenderService: failed to render');
     };
 
+    let isFastifyAdapter = false;
+    try {
+      const { FastifyAdapter } = require('@nestjs/platform-fastify');
+      isFastifyAdapter = server instanceof FastifyAdapter;
+    } catch (e) {
+      // Failed to load @nestjs/platform-fastify probably. Assume not fastify.
+    }
+
     // and nextjs renderer to reply/response
-    if (server instanceof FastifyAdapter) {
+    if (isFastifyAdapter) {
       server
         .getInstance()
         .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
           const res = this.res;
           const req = this.request.raw;
 
-          if (!renderer) {
-            throw new InternalServerErrorException(
-              'RenderService: renderer is not set',
-            );
-          }
-
           return renderer(req, res, getViewPath(view), data);
         } as RenderableResponse['render']);
     } else {
       server.getInstance().use((req: any, res: any, next: () => any) => {
         res.render = ((view: string, data?: ParsedUrlQuery) => {
-          if (!renderer) {
-            throw new InternalServerErrorException(
-              'RenderService: renderer is not set',
-            );
-          }
           return renderer(req, res, getViewPath(view), data);
         }) as RenderableResponse['render'];
 
         next();
       });
     }
-  }
-
-  /**
-   * Check if the URL is internal to nextjs
-   * @param url
-   */
-  public isInternalUrl(url: string): boolean {
-    return isInternalUrl(url);
   }
 
   /**

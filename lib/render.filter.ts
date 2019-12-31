@@ -1,4 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from '@nestjs/common';
 import { IncomingMessage, ServerResponse } from 'http';
 import { parse as parseUrl } from 'url';
 import { RenderService } from './render.service';
@@ -26,14 +31,6 @@ export class RenderFilter implements ExceptionFilter {
     if (response && request) {
       const requestHandler = this.service.getRequestHandler();
       const errorRenderer = this.service.getErrorRenderer();
-
-      // these really should already always be set since it is done during the module registration
-      // if somehow they aren't throw an error
-      if (!requestHandler || !errorRenderer) {
-        throw new Error(
-          'Request and/or error renderer not set on RenderService',
-        );
-      }
 
       const res: ServerResponse = response.res ? response.res : response;
       const req: IncomingMessage = request.raw ? request.raw : request;
@@ -63,6 +60,13 @@ export class RenderFilter implements ExceptionFilter {
         }
 
         const serializedErr = this.serializeError(err);
+
+        if (res.statusCode === HttpStatus.NOT_FOUND) {
+          return errorRenderer(null, req, res, pathname, {
+            ...query,
+            [Symbol.for('Error')]: serializedErr,
+          });
+        }
 
         return errorRenderer(serializedErr, req, res, pathname, query);
       }
