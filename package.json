@@ -15,14 +15,21 @@
   "scripts": {
     "build": "del-cli ./dist --force && tsc -p tsconfig.json",
     "prepublish": "yarn run build",
-    "publish-public": "yarn publish --access public"
+    "publish-public": "yarn publish --access public",
+    "lint": "node ./node_modules/eslint/bin/eslint.js lib/**"
   },
   "devDependencies": {
     "@types/node": "^11.12",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
     "del-cli": "^2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
     "mermaid.cli": "^0.5",
     "next": "^9.0.6",
-    "prettier": "^1.16",
+    "prettier": "^1.19.1",
     "reflect-metadata": "^0.1",
     "tslint": "^5.14",
     "tslint-config-prettier": "^1.18",
