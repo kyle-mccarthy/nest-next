@@ -164,6 +164,9 @@ export class RenderService {
       const req = isFastify ? response.request.raw : response.req;
 
       if (req && res) {
+        if (isFastify) {
+          response.sent = true;
+        }
         return renderer(req, res, getViewPath(view), data);
       } else if (!res) {
         throw new InternalServerErrorException(
@@ -193,6 +196,7 @@ export class RenderService {
         .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
           const res = this.res;
           const req = this.request.raw;
+          this.sent = true;
 
           return renderer(req, res, getViewPath(view), data);
         } as RenderableResponse['render']);

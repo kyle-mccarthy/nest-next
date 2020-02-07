@@ -32,13 +32,18 @@ export class RenderFilter implements ExceptionFilter {
       const requestHandler = this.service.getRequestHandler();
       const errorRenderer = this.service.getErrorRenderer();
 
-      const res: ServerResponse = response.res ? response.res : response;
-      const req: IncomingMessage = request.raw ? request.raw : request;
+      const isFastify = !!response.res;
+
+      const res: ServerResponse = isFastify ? response.res : response;
+      const req: IncomingMessage = isFastify ? request.raw : request;
 
       if (!res.headersSent && req.url) {
         // check to see if the URL requested is an internal nextjs route
         // if internal, the url is to some asset (ex /_next/*) that needs to be rendered by nextjs
         if (this.service.isInternalUrl(req.url)) {
+          if (isFastify) {
+            response.sent = true;
+          }
           return requestHandler(req, res);
         }
 
@@ -60,6 +65,10 @@ export class RenderFilter implements ExceptionFilter {
         }
 
         const serializedErr = this.serializeError(err);
+
+        if (isFastify) {
+          response.sent = true;
+        }
 
         if (res.statusCode === HttpStatus.NOT_FOUND) {
           return errorRenderer(null, req, res, pathname, {
