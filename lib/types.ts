@@ -2,7 +2,7 @@ import { ParsedUrlQuery } from 'querystring';
 
 export type RequestHandler = (req: any, res: any, query?: any) => Promise<void>;
 
-export type Renderer<DataType extends ParsedUrlQuery = ParsedUrlQuery> = (
+export type Renderer<DataType extends unknown = ParsedUrlQuery> = (
   req: any,
   res: any,
   view: string,
@@ -10,7 +10,7 @@ export type Renderer<DataType extends ParsedUrlQuery = ParsedUrlQuery> = (
 ) => Promise<void>;
 
 export interface RenderableResponse<
-  DataType extends ParsedUrlQuery = ParsedUrlQuery
+  DataType extends unknown = ParsedUrlQuery
 > {
   render(view: string, data?: DataType): ReturnType<Renderer<DataType>>;
 }
