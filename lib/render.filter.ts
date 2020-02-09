@@ -32,6 +32,14 @@ export class RenderFilter implements ExceptionFilter {
       const requestHandler = this.service.getRequestHandler();
       const errorRenderer = this.service.getErrorRenderer();
 
+      // these really should already always be set since it is done during the module registration
+      // if somehow they aren't throw an error
+      if (!requestHandler || !errorRenderer) {
+        throw new Error(
+          'Request and/or error renderer not set on RenderService',
+        );
+      }
+
       const isFastify = !!response.res;
 
       const res: ServerResponse = isFastify ? response.res : response;

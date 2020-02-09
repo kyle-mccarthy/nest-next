@@ -1,7 +1,4 @@
-import {
-  HttpServer,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpServer, InternalServerErrorException } from '@nestjs/common';
 import { ParsedUrlQuery } from 'querystring';
 import { isInternalUrl } from './next-utils';
 import {
@@ -14,28 +11,31 @@ import {
 } from './types';
 
 export class RenderService {
-  private requestHandler: RequestHandler;
-  private renderer: Renderer;
-  private errorRenderer: ErrorRenderer;
+  public static init(
+    config: Partial<RendererConfig>,
+    handler: RequestHandler,
+    renderer: Renderer,
+    errorRenderer: ErrorRenderer,
+    server: HttpServer,
+  ): RenderService {
+    const self = new RenderService();
+    self.mergeConfig(config);
+    self.setRequestHandler(handler);
+    self.setRenderer(renderer);
+    self.setErrorRenderer(errorRenderer);
+    self.bindHttpServer(server);
+    return self;
+  }
+
+  private initialized = false;
+  private requestHandler?: RequestHandler;
+  private renderer?: Renderer;
+  private errorRenderer?: ErrorRenderer;
   private errorHandler?: ErrorHandler;
   private config: RendererConfig = {
     dev: process.env.NODE_ENV !== 'production',
     viewsDir: '/views',
   };
-
-  constructor(
-    config: Partial<RendererConfig>,
-    handler: RequestHandler,
-    renderer: Renderer,
-    errorRenderer: ErrorRenderer,
-    server: HttpServer
-  ) {
-    this.mergeConfig(config);
-    this.requestHandler = handler;
-    this.renderer = renderer;
-    this.errorRenderer = errorRenderer;
-    this.bindHttpServer(server);
-  }
 
   /**
    * Merge the default config with the config obj passed to method
@@ -91,7 +91,7 @@ export class RenderService {
   /**
    * Get the default request handler
    */
-  public getRequestHandler(): RequestHandler {
+  public getRequestHandler(): RequestHandler | undefined {
     return this.requestHandler;
   }
 
@@ -106,7 +106,7 @@ export class RenderService {
   /**
    * Get the render function provided by next
    */
-  public getRenderer(): Renderer {
+  public getRenderer(): Renderer | undefined {
     return this.renderer;
   }
 
@@ -121,7 +121,7 @@ export class RenderService {
   /**
    * Get nextjs error renderer
    */
-  public getErrorRenderer(): ErrorRenderer {
+  public getErrorRenderer(): ErrorRenderer | undefined {
     return this.errorRenderer;
   }
 
@@ -149,11 +149,23 @@ export class RenderService {
   }
 
   /**
+   * Check if the service has been initialized by the module
+   */
+  public isInitialized(): boolean {
+    return this.initialized;
+  }
+
+  /**
    * Bind to the render function for the HttpServer that nest is using and override
    * it to allow for next to render the page
    * @param server
    */
-  protected bindHttpServer(server: HttpServer) {
+  public bindHttpServer(server: HttpServer) {
+    if (this.initialized) {
+      throw new Error('RenderService: already initialized');
+    }
+
+    this.initialized = true;
     const renderer = this.getRenderer();
     const getViewPath = this.getViewPath.bind(this);
 
@@ -163,11 +175,15 @@ export class RenderService {
       const res = isFastify ? response.res : response;
       const req = isFastify ? response.request.raw : response.req;
 
-      if (req && res) {
+      if (req && res && renderer) {
         if (isFastify) {
           response.sent = true;
         }
         return renderer(req, res, getViewPath(view), data);
+      } else if (!renderer) {
+        throw new InternalServerErrorException(
+          'RenderService: renderer is not set',
+        );
       } else if (!res) {
         throw new InternalServerErrorException(
           'RenderService: could not get the response',
@@ -196,6 +212,13 @@ export class RenderService {
         .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
           const res = this.res;
           const req = this.request.raw;
+
+          if (!renderer) {
+            throw new InternalServerErrorException(
+              'RenderService: renderer is not set',
+            );
+          }
+
           this.sent = true;
 
           return renderer(req, res, getViewPath(view), data);
@@ -203,6 +226,12 @@ export class RenderService {
     } else {
       server.getInstance().use((req: any, res: any, next: () => any) => {
         res.render = ((view: string, data?: ParsedUrlQuery) => {
+          if (!renderer) {
+            throw new InternalServerErrorException(
+              'RenderService: renderer is not set',
+            );
+          }
+
           return renderer(req, res, getViewPath(view), data);
         }) as RenderableResponse['render'];
 
