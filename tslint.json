@@ -1,6 +1,11 @@
 {
   "extends": ["tslint:latest", "tslint-config-prettier"],
   "rules": {
+    "no-implicit-dependencies": {
+      "options": [
+        "dev"
+      ]
+    },
     "interface-name": false,
     "only-arrow-functions": false,
     "no-submodule-imports": false

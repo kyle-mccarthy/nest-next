@@ -1,9 +1,4 @@
-import {
-  HttpServer,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { HttpServer, InternalServerErrorException } from '@nestjs/common';
 import { ParsedUrlQuery } from 'querystring';
 import { isInternalUrl } from './next-utils';
 import {
@@ -15,8 +10,24 @@ import {
   RequestHandler,
 } from './types';
 
-@Injectable()
 export class RenderService {
+  public static init(
+    config: Partial<RendererConfig>,
+    handler: RequestHandler,
+    renderer: Renderer,
+    errorRenderer: ErrorRenderer,
+    server: HttpServer,
+  ): RenderService {
+    const self = new RenderService();
+    self.mergeConfig(config);
+    self.setRequestHandler(handler);
+    self.setRenderer(renderer);
+    self.setErrorRenderer(errorRenderer);
+    self.bindHttpServer(server);
+    return self;
+  }
+
+  private initialized = false;
   private requestHandler?: RequestHandler;
   private renderer?: Renderer;
   private errorRenderer?: ErrorRenderer;
@@ -125,8 +136,23 @@ export class RenderService {
   /**
    * Get the custom error handler
    */
-  public getErrorHandler() {
+  public getErrorHandler(): ErrorHandler | undefined {
     return this.errorHandler;
+  }
+
+  /**
+   * Check if the URL is internal to nextjs
+   * @param url
+   */
+  public isInternalUrl(url: string): boolean {
+    return isInternalUrl(url);
+  }
+
+  /**
+   * Check if the service has been initialized by the module
+   */
+  public isInitialized(): boolean {
+    return this.initialized;
   }
 
   /**
@@ -135,6 +161,11 @@ export class RenderService {
    * @param server
    */
   public bindHttpServer(server: HttpServer) {
+    if (this.initialized) {
+      throw new Error('RenderService: already initialized');
+    }
+
+    this.initialized = true;
     const renderer = this.getRenderer();
     const getViewPath = this.getViewPath.bind(this);
 
@@ -145,6 +176,9 @@ export class RenderService {
       const req = isFastify ? response.request.raw : response.req;
 
       if (req && res && renderer) {
+        if (isFastify) {
+          response.sent = true;
+        }
         return renderer(req, res, getViewPath(view), data);
       } else if (!renderer) {
         throw new InternalServerErrorException(
@@ -163,8 +197,16 @@ export class RenderService {
       throw new Error('RenderService: failed to render');
     };
 
+    let isFastifyAdapter = false;
+    try {
+      const { FastifyAdapter } = require('@nestjs/platform-fastify');
+      isFastifyAdapter = server instanceof FastifyAdapter;
+    } catch (e) {
+      // Failed to load @nestjs/platform-fastify probably. Assume not fastify.
+    }
+
     // and nextjs renderer to reply/response
-    if (server instanceof FastifyAdapter) {
+    if (isFastifyAdapter) {
       server
         .getInstance()
         .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
@@ -177,6 +219,8 @@ export class RenderService {
             );
           }
 
+          this.sent = true;
+
           return renderer(req, res, getViewPath(view), data);
         } as RenderableResponse['render']);
     } else {
@@ -187,20 +231,13 @@ export class RenderService {
               'RenderService: renderer is not set',
             );
           }
+
           return renderer(req, res, getViewPath(view), data);
         }) as RenderableResponse['render'];
 
         next();
       });
     }
-  }
-
-  /**
-   * Check if the URL is internal to nextjs
-   * @param url
-   */
-  public isInternalUrl(url: string): boolean {
-    return isInternalUrl(url);
   }
 
   /**

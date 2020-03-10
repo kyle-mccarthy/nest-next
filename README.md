@@ -36,43 +36,16 @@
 
 ### Import and register the RenderModule
 
-In the `main.ts`, import Next and prepare it. Get the `RenderService` and register it by passing it the
-Nest application and next server.
-
-```typescript
-import { NestFactory } from '@nestjs/core';
-import { RenderModule } from 'nest-next';
-import Next from 'next';
-import 'reflect-metadata';
-import { AppModule } from './application.module';
-
-async function bootstrap() {
-  const dev = process.env.NODE_ENV !== 'production';
-  const app = Next({ dev });
-
-  await app.prepare();
-
-  const server = await NestFactory.create(AppModule);
-
-  const renderer = server.get(RenderModule);
-  renderer.register(server, app);
-
-  await server.listen(process.env.PORT || 3000);
-}
-
-bootstrap();
-
-```
-
-In the `application.module.ts` import the RenderModule.
+Import the RenderModule into your application's root module.
 
 ```typescript
 import { Module } from '@nestjs/common';
+import Next from 'next';
 import { RenderModule } from 'nest-next';
 
 @Module({
   imports: [
-    RenderModule,
+    RenderModule.forRootAsync(Next({ dev: process.env.NODE_ENV !== 'production' })),
     ...
   ],
   ....
@@ -80,7 +53,9 @@ import { RenderModule } from 'nest-next';
 export class AppModule {}
 ```
 
-### Default Settings
+### Settings
+
+Settings to the RenderModule can be passed as the second argument of forRootAsync() above.
 
 ```typescript
 interface RenderOptions {
@@ -92,10 +67,9 @@ interface RenderOptions {
 **Views/Pages Folder**
 
 By default the the renderer will serve pages from the `/pages/views` dir. Due to limitations with
-Next the `/pages` dir is not configurable, but the directory within the `/pages` dir is configurable.
+Next, the `/pages` dir is not configurable, but the directory within the `/pages` dir is configurable.
 
-The `register` method on the `RenderModule` takes an optional parameter `viewsDir` which determine the
-folder inside of `pages` to render from. By default the value is `/views` but this can be changed or
+The `viewsDir` option determines the folder inside of `pages` to render from. By default the value is `/views` but this can be changed or
 set to null to render from the root of `pages`.
 
 **Dev Mode**
@@ -183,9 +157,6 @@ You can set the error handler by getting the RenderService from nest's container
 const main() => {
   ...
 
-  const renderer = server.get(RenderModule);
-  renderer.register(server, app);
-
   // get the RenderService
   const service = server.get(RenderService);
 
@@ -252,6 +223,11 @@ outside of both projects. Changes in it during "dev" runs trigger recompilation 
         /AboutPage.ts
         /IndexPage.ts
       package.json
+      
+
+To run this project, the "ui" and "server" project must be built, in any order. The "dto" project will be implicitly built by the "server" project. After both of those builds, the "server" project can be started in either dev or production mode.
+
+It is important that "ui" references to "dto" refer to the TypeScript files (.ts files in the "src" folder), and NOT the declaration files (.d.ts files in the "dist" folder), due to how Next not being compiled in the same fashion as the server.
 
 ## Configuring Next
 
