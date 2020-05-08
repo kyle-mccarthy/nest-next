@@ -31,6 +31,12 @@
 
     yarn add nest-next
 
+## Required Dependencies
+
+- `next`
+- `nestjs`
+- `react`
+- `react-dom`
 
 ## Usage
 
@@ -231,22 +237,17 @@ It is important that "ui" references to "dto" refer to the TypeScript files (.ts
 
 ## Configuring Next
 
-**Required Dependencies**
-
-- `react`
-- `react-dom`
-
-## tsconfig.json
+### tsconfig.json
 
 Next 9 added [built-in zero-config typescript support](https://nextjs.org/blog/next-9#built-in-zero-config-typescript-support). This change is great in general, but next requires specific settings in the tsconfig which are incompatible with what are needed for the server. However, these settings can easily be overridden in the `tsconfig.server.json` file.
 
 If you are having issues with unexpected tokens, files not emitting when building for production, warnings about `allowJs` and `declaration` not being used together, and other typescript related errors; see the `tsconfig.server.json` [file in the example project](/example/tsconfig.server.json) for the full config.
 
-## Versioning
+### Versioning
 
 The major version of `nest-next` corresponds to the major version of `next`.
 
-## By Example
+### By Example
 
 Fully setup projects can be viewed in the [examples folder](/examples)
 
