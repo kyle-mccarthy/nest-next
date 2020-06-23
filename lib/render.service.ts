@@ -34,6 +34,7 @@ export class RenderService {
   private errorHandler?: ErrorHandler;
   private config: RendererConfig = {
     dev: process.env.NODE_ENV !== 'production',
+    passthrough404: false,
     viewsDir: '/views',
   };
 
@@ -47,6 +48,9 @@ export class RenderService {
     }
     if (typeof config.viewsDir === 'string' || config.viewsDir === null) {
       this.config.viewsDir = config.viewsDir;
+    }
+    if (typeof config.passthrough404 === 'boolean') {
+      this.config.passthrough404 = config.passthrough404;
     }
   }
 
@@ -78,6 +82,13 @@ export class RenderService {
    */
   public isDev(): boolean {
     return this.config.dev!;
+  }
+
+  /**
+   * Should 404 errors passthrough to Next
+   */
+  public passthroughNotFoundErrors(): boolean {
+    return !!this.config.passthrough404;
   }
 
   /**

@@ -79,6 +79,10 @@ export class RenderFilter implements ExceptionFilter {
         }
 
         if (res.statusCode === HttpStatus.NOT_FOUND) {
+          if (this.service.passthroughNotFoundErrors()) {
+            return requestHandler(req, res);
+          }
+
           return errorRenderer(null, req, res, pathname, {
             ...query,
             [Symbol.for('Error')]: serializedErr,
