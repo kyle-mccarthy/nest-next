@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": ".next/production-server",
+    "declaration": true,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "isolatedModules": false,
+    "noEmit": false,
+    "allowJs": false
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
+}

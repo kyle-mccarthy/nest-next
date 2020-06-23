@@ -1,0 +1,36 @@
+{
+  "name": "passthrough",
+  "version": "1.0.0",
+  "description": "nest-next passthrough example",
+  "main": "index.js",
+  "author": "Kyle McCarthy",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/main.ts",
+    "build:clean": "rimraf .next",
+    "build:ui": "npx next build",
+    "build:server": "npx tsc --project tsconfig.server.json && npx babel .next/production-server -d .next/production-server --extensions \".js\"",
+    "build": "yarn build:clean && yarn build:ui && yarn build:server",
+    "start": "cross-env NODE_ENV=production node .next/production-server/main.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "^7.2.0",
+    "@nestjs/core": "^7.2.0",
+    "@nestjs/platform-express": "^7.2.0",
+    "nest-next": "file:.yalc/nest-next",
+    "next": "^9.4.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.5.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.3",
+    "@babel/core": "^7.10.3",
+    "@types/node": "^14.0.13",
+    "@types/react": "^16.9.38",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}
