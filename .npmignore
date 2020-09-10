@@ -6,4 +6,9 @@ tsconfig.json
 yarn-error.log
 yarn.lock
 docs
-example
+examples
+.github
+CHANGES.md
+.prettierrc
+.eslintrc.js
+
