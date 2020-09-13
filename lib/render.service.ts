@@ -178,7 +178,14 @@ export class RenderService {
       if (req && res && renderer) {
         if (isFastify) {
           response.sent = true;
+        } else {
+          // Merge res.locals into the data object just like Express does.
+          // The controller data always takes precedence over res.locals
+          if (res.locals) {
+            data = { ...res.locals, ...data };
+          }
         }
+
         return renderer(req, res, getViewPath(view), data);
       } else if (!renderer) {
         throw new InternalServerErrorException(
@@ -209,7 +216,7 @@ export class RenderService {
     if (isFastifyAdapter) {
       server
         .getInstance()
-        .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
+        .decorateReply('render', function (view: string, data?: ParsedUrlQuery) {
           const res = this.res;
           const req = this.request.raw;
 
@@ -230,6 +237,12 @@ export class RenderService {
             throw new InternalServerErrorException(
               'RenderService: renderer is not set',
             );
+          }
+
+          // Merge res.locals into the data object just like Express does.
+          // The controller data always takes precedence over res.locals
+          if (res.locals) {
+            data = { ...res.locals, ...data };
           }
 
           return renderer(req, res, getViewPath(view), data);
