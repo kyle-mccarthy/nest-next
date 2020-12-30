@@ -35,7 +35,8 @@
   "include": [
     "./pages/**/*",
     "./src/**/*",
-    "./ui/**/*"
+    "./ui/**/*",
+    "types.ts"
   ],
   "exclude": [
     "node_modules"
