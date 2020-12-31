@@ -9,7 +9,7 @@
     "build:ui": "npx next build",
     "build:server": "npx tsc --project tsconfig.server.json && npx babel .next/production-server -d .next/production-server --extensions \".js\"",
     "build": "yarn build:clean && yarn build:ui && yarn build:server",
-    "start": "cross-env NODE_ENV=production node .next/production-server/main.js"
+    "start": "cross-env NODE_ENV=production node .next/production-server/src/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^6.5.3",

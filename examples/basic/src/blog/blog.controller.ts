@@ -10,6 +10,7 @@ import { BlogService } from './blog.service';
 @Controller('/blog')
 export class BlogController {
   constructor(private service: BlogService) {}
+
   @Render('blog')
   @Get()
   public index() {
@@ -18,7 +19,7 @@ export class BlogController {
 
   @Render('blog/[slug]')
   @Get(':slug')
-  public post(@Param('slug') slug: string) {
+  public get(@Param('slug') slug: string) {
     const post = this.service.find(slug);
 
     if (post === null) {
