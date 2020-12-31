@@ -24,6 +24,7 @@ const PostPreview: FC<Props> = ({ post }) => {
           pathname: '/views/blog/[slug]',
           query: { slug: post.slug },
         }}
+        as={`/blog/${post.slug}`}
       >
         <a
           style={{
