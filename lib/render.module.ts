@@ -23,6 +23,15 @@ export class RenderModule {
       await next.prepare();
     }
 
+    const nextConfig = (next as any).nextConfig;
+    const nextServer = (next as any).server;
+
+    const basePath = nextConfig
+      ? nextConfig.basePath
+      : nextServer.nextConfig.basePath;
+
+    const config = { basePath, ...options };
+
     return {
       exports: [RenderService],
       module: RenderModule,
@@ -32,7 +41,7 @@ export class RenderModule {
           provide: RenderService,
           useFactory: (nestHost: HttpAdapterHost): RenderService => {
             return RenderService.init(
-              options,
+              config,
               next.getRequestHandler(),
               next.render.bind(next),
               next.renderError.bind(next),

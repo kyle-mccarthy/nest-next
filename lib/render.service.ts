@@ -48,6 +48,9 @@ export class RenderService {
     if (typeof config.viewsDir === 'string' || config.viewsDir === null) {
       this.config.viewsDir = config.viewsDir;
     }
+    if (typeof config.basePath === 'string') {
+      this.config.basePath = config.basePath;
+    }
   }
 
   /**
@@ -145,6 +148,10 @@ export class RenderService {
    * @param url
    */
   public isInternalUrl(url: string): boolean {
+    if (this.config.basePath && url.startsWith(this.config.basePath)) {
+      return isInternalUrl(url.replace(this.config.basePath, ''));
+    }
+
     return isInternalUrl(url);
   }
 
