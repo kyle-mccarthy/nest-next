@@ -33,6 +33,7 @@ export type ErrorHandler = (
 
 export interface RendererConfig {
   viewsDir: null | string;
+  basePath?: string;
   dev: boolean;
 }
 
