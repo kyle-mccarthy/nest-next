@@ -1,3 +1,4 @@
+import path from 'path/posix';
 import { HttpServer, InternalServerErrorException } from '@nestjs/common';
 import { ParsedUrlQuery } from 'querystring';
 import { isInternalUrl } from './next-utils';
@@ -265,6 +266,6 @@ export class RenderService {
   protected getViewPath(view: string) {
     const baseDir = this.getViewsDir();
     const basePath = baseDir ? baseDir : '';
-    return `${basePath}/${view}`;
+    return path.normalize(`${basePath}/${view}`);
   }
 }
