@@ -1,4 +1,4 @@
-import path from 'path/posix';
+import path from 'path';
 import { HttpServer, InternalServerErrorException } from '@nestjs/common';
 import { ParsedUrlQuery } from 'querystring';
 import { isInternalUrl } from './next-utils';
