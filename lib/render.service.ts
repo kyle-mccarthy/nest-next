@@ -255,6 +255,6 @@ export class RenderService {
   protected getViewPath(view: string) {
     const baseDir = this.getViewsDir();
     const basePath = baseDir ? baseDir : '';
-    return path.normalize(`${basePath}/${view}`);
+    return path.posix.normalize(`${basePath}/${view}`);
   }
 }
