@@ -19,6 +19,7 @@
   - [Views/Pages Folder](#viewspages-folder)
   - [Dev Mode](#dev-mode)
   - [tsconfig.json](#tsconfigjson)
+  - [Pass-through 404s](#pass-through-404s)
 - [Rendering Pages](#rendering-pages)
 - [Rendering the initial props](#rendering-the-initial-props)
 - [Handling Errors](#handling-errors)
@@ -46,9 +47,9 @@ npm install nest-next
 
 ### Peer Dependencies
 
-* `react`
-* `react-dom`
-* `next`
+- `react`
+- `react-dom`
+- `next`
 
 if you are using next.js with typescript which most likely is the case, you will need to also install the typescript types for react and react-dom.
 
@@ -99,7 +100,7 @@ Next 9 added [built-in zero-config typescript support](https://nextjs.org/blog/n
 
 If you are having issues with unexpected tokens, files not emitting when building for production, warnings about `allowJs` and `declaration` not being used together, and other typescript related errors; see the `tsconfig.server.json` [file in the example project](/examples/basic/tsconfig.server.json) for the full config.
 
-#### Pass-through 404 Errros to Next
+#### Pass-through 404s 
 
 Instead of having Nest handle the response for requests that 404, they can be forwarded to Next's request handler.
 
@@ -122,15 +123,10 @@ the Render decorator from `@nestjs/common` and add it to the method that will re
 path for the page is relative to the `/pages` directory.
 
 ```typescript
-import {
-  Controller,
-  Get,
-  Render,
-} from '@nestjs/common';
+import { Controller, Get, Render } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-
   @Get()
   @Render('Index')
   public index() {
@@ -144,11 +140,9 @@ export class AppController {
 
 Additionally, the render function is made available on the res object.
 
-
 ```typescript
 @Controller()
 export class AppController {
-
   @Get()
   public index(@Res() res: RenderableResponse) {
     res.render('Index', {
@@ -161,7 +155,7 @@ export class AppController {
 The render function takes in the view, as well as the initial props passed to the page.
 
 ```typescript
-render = (view: string, initialProps?: any) => any
+render = (view: string, initialProps?: any) => any;
 ```
 
 ### Rendering the initial props
@@ -169,17 +163,17 @@ render = (view: string, initialProps?: any) => any
 The initial props sent to the next.js view page can be accessed from the context's query method inside the getInitialProps method.
 
 ```typescript
-import { NextPage, NextPageContext } from 'next'
+import { NextPage, NextPageContext } from 'next';
 
 // The component's props type
 type PageProps = {
-  title: string
-}
+  title: string;
+};
 
 // extending the default next context type
 type PageContext = NextPageContext & {
-  query: PageProps
-}
+  query: PageProps;
+};
 
 // react component
 const Page: NextPage<PageProps> = ({ title }) => {
@@ -187,17 +181,17 @@ const Page: NextPage<PageProps> = ({ title }) => {
     <div>
       <h1>{title}</h1>
     </div>
-  )
-}
+  );
+};
 
 // assigning the initial props to the component's props
 Page.getInitialProps = (ctx: PageContext) => {
   return {
     title: ctx.query.title,
-  }
-}
+  };
+};
 
-export default Page
+export default Page;
 ```
 
 ### Handling Errors
@@ -254,6 +248,7 @@ _The image is linked to a larger version_
 ### Examples folder structure
 
 Fully setup projects can be viewed in the [examples folder](/examples)
+
 #### Basic Setup
 
 Next renders pages from the pages directory. The Nest source code can remain in the default `/src` folder
@@ -272,7 +267,6 @@ Next renders pages from the pages directory. The Nest source code can remain in 
     nodemon.json
     tsconfig.json
     tsconfig.server.json
-
 
 #### Monorepo
 
@@ -300,15 +294,11 @@ outside of both projects. Changes in it during "dev" runs trigger recompilation 
         /AboutPage.ts
         /IndexPage.ts
       package.json
-      
+
 
 To run this project, the "ui" and "server" project must be built, in any order. The "dto" project will be implicitly built by the "server" project. After both of those builds, the "server" project can be started in either dev or production mode.
 
 It is important that "ui" references to "dto" refer to the TypeScript files (.ts files in the "src" folder), and NOT the declaration files (.d.ts files in the "dist" folder), due to how Next not being compiled in the same fashion as the server.
-
-### Versioning
-
-The major version of `nest-next` corresponds to the major version of `next`.
 
 ### License
 
