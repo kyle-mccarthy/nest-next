@@ -99,6 +99,22 @@ Next 9 added [built-in zero-config typescript support](https://nextjs.org/blog/n
 
 If you are having issues with unexpected tokens, files not emitting when building for production, warnings about `allowJs` and `declaration` not being used together, and other typescript related errors; see the `tsconfig.server.json` [file in the example project](/examples/basic/tsconfig.server.json) for the full config.
 
+#### Pass-through 404 Errros to Next
+
+Instead of having Nest handle the response for requests that 404, they can be forwarded to Next's request handler.
+
+```typescript
+RenderModule.forRootAsync(
+  Next({
+    dev: process.env.NODE_ENV !== 'production',
+    dir: resolve(__dirname, '..'),
+  }),
+  { passthrough404: true, viewsDir: null },
+),
+```
+
+See [this discussion](https://github.com/kyle-mccarthy/nest-next/issues/38#issuecomment-647867509) for more context.
+
 ### Rendering Pages
 
 The `RenderModule` overrides the Express/Fastify render. To render a page in your controller import
