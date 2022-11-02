@@ -10,6 +10,8 @@ import {
   RendererConfig,
   RequestHandler,
 } from './types';
+import { getNamedRouteRegex } from './next/route-regex';
+import { interpolateDynamicPath } from './next/interpolate-dynamic-path';
 
 export class RenderService {
   public static init(
@@ -189,6 +191,7 @@ export class RenderService {
     const getViewPath = this.getViewPath.bind(this);
 
     server.render = (response: any, view: string, data: any) => {
+      console.log('server render');
       const isFastify = response.request !== undefined;
 
       const res = isFastify ? response.res : response;
@@ -198,7 +201,7 @@ export class RenderService {
         if (isFastify) {
           response.sent = true;
         }
-        return renderer(req, res, getViewPath(view), data);
+        return renderer(req, res, getViewPath(view, req.params), data);
       } else if (!renderer) {
         throw new InternalServerErrorException(
           'RenderService: renderer is not set',
@@ -228,7 +231,10 @@ export class RenderService {
     if (isFastifyAdapter) {
       server
         .getInstance()
-        .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
+        .decorateReply('render', function (
+          view: string,
+          data?: ParsedUrlQuery,
+        ) {
           const res = this.res;
           const req = this.request.raw;
 
@@ -240,18 +246,19 @@ export class RenderService {
 
           this.sent = true;
 
-          return renderer(req, res, getViewPath(view), data);
+          return renderer(req, res, getViewPath(view, req.params), data);
         } as RenderableResponse['render']);
     } else {
       server.getInstance().use((req: any, res: any, next: () => any) => {
         res.render = ((view: string, data?: ParsedUrlQuery) => {
+          console.log('res render');
           if (!renderer) {
             throw new InternalServerErrorException(
               'RenderService: renderer is not set',
             );
           }
 
-          return renderer(req, res, getViewPath(view), data);
+          return renderer(req, res, getViewPath(view, req.params), data);
         }) as RenderableResponse['render'];
 
         next();
@@ -262,10 +269,13 @@ export class RenderService {
   /**
    * Format the path to the view
    * @param view
+   * @param params
    */
-  protected getViewPath(view: string) {
+  protected getViewPath(view: string, params: ParsedUrlQuery) {
     const baseDir = this.getViewsDir();
     const basePath = baseDir ? baseDir : '';
-    return path.posix.normalize(`${basePath}/${view}`);
+    const pathname = path.posix.normalize(`${basePath}/${view}`);
+    const regex = getNamedRouteRegex(pathname);
+    return interpolateDynamicPath(pathname, params, regex);
   }
 }
