@@ -1,0 +1,17 @@
+ARG NODE_VERSION=14
+
+FROM node:$NODE_VERSION
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+ARG NEXT_VERSION=12
+ENV NEXT_VERSION=${NEXT_VERSION}
+RUN npm install next@$NEXT_VERSION --save 
+
+RUN npm run build
+
+ENTRYPOINT ["npm", "run", "start"]
