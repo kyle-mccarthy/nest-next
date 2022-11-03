@@ -63,7 +63,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: tests/e2e
-        run: npm install
+        run: npm install && npx playwright install --with-deps
 
       - name: Run tests
         working-directory: tests/e2e
@@ -73,7 +73,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
+          name: playwright-report/
           path: tests/e2e/playwright-report
 
       - name: Display service logs
@@ -82,5 +82,5 @@ jobs:
 
       - name: Stop containers
         if: always()
-        working-directory: docker
+        working-directory: tests
         run: docker-compose down
