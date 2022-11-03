@@ -78,7 +78,7 @@ jobs:
 
       - name: Display service logs
         if: always()
-        run: docker logs tests_${{ matrix.service }}
+        run: docker logs tests_${{ matrix.service }}_1
 
       - name: Stop containers
         if: always()
