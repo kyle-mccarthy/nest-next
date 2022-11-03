@@ -45,11 +45,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nest-next-dist
-          path: tests/test-app/
+          path: tests/test-app/nest-next-dist
 
       - name: Rename dist to nest-next-dist
         working-directory: tests/test-app
-        run: mv dist nest-next-dist
+        run: ls nest-next-dist
 
       - name: Start service
         working-directory: tests
