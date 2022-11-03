@@ -48,10 +48,6 @@ jobs:
           name: nest-next-dist
           path: tests/test-app/nest-next-dist
 
-      - name: Rename dist to nest-next-dist
-        working-directory: tests/test-app
-        run: ls nest-next-dist
-
       - name: Start service
         working-directory: tests
         run: |
