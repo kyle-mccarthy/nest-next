@@ -30,7 +30,7 @@ export class AppController {
   @Render('blog-posts')
   @UseInterceptors(ParamsInterceptor)
   blogPosts() {
-    return {};
+    return { title: 'BLOG POSTS' };
   }
 
   @Get('/blog-posts/:slug')

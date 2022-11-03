@@ -1,13 +1,13 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';
 
-type THomeProps = {};
+type THomeProps = { title: string };
 
-const Home: FC<THomeProps> = ({}) => {
+const Home: FC<THomeProps> = ({ title }) => {
   return (
     <div>
-      <h1>HOME</h1>
+      <h1>{title}</h1>
       <div>
         <Link href="/1">TO 1</Link>
       </div>
@@ -15,8 +15,8 @@ const Home: FC<THomeProps> = ({}) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  return { props: {} };
+export const getStaticProps: GetStaticProps = async () => {
+  return { props: { title: 'HOME' } };
 };
 
 export default Home;

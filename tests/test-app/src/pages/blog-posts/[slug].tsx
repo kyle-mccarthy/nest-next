@@ -11,7 +11,7 @@ const BlogPost: FC<TBlogPostProps> = ({ slug }) => {
     <div>
       <h1>{slug}</h1>
       <div>
-        <Link href={'/'}>TO BLOG POSTS</Link>
+        <Link href={'/blog-posts'}>TO BLOG POSTS</Link>
       </div>
     </div>
   );

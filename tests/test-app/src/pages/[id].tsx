@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -17,8 +17,14 @@ const Post: FC<TPostProps> = ({ id }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const id = ctx.query.id;
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = [1, 2].map((id) => ({ params: { id: String(id) } }));
+
+  return { paths, fallback: true };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  const id = ctx.params!.id;
 
   return { props: { id } };
 };
