@@ -1,0 +1,82 @@
+name: Build and test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['*', '**']
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: nest-next-dist
+          path: dist/
+
+  e2e:
+    needs: build
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        next_version: [10, 11, 12, 13]
+        service: ['test-app', 'test-app-dev']
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Download dist directory
+        uses: actions/download-artifact@v3
+        with:
+          name: nest-next-dist
+          path: tests/test-app/
+
+      - name: Rename dist to nest-next-dist
+        working-directory: tests/test-app
+        run: mv dist nest-next-dist
+
+      - name: Start service
+        working-directory: tests
+        run: |
+          docker-compose up -d --build ${{ matrix.service }} \
+          && ./wait-until "curl -sLf -o /dev/null http://localhost:8024/api/health/ping/" 300
+
+      - name: Install dependencies
+        working-directory: tests/e2e
+        run: npm ci
+
+      - name: Run tests
+        working-directory: tests/e2e
+        run: npx playwright test
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: tests/e2e/playwright-report
+
+      - name: Display service logs
+        if: always()
+        run: docker logs tests_${{matrix.service}}
+
+      - name: Stop containers
+        if: always()
+        working-directory: docker
+        run: docker-compose down
