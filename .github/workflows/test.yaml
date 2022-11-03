@@ -3,7 +3,7 @@ name: Build and test
 on:
   workflow_dispatch:
   push:
-    branches: ['*']
+    branches: [master]
   pull_request:
     branches: [master]
 
