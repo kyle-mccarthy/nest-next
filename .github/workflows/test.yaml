@@ -56,7 +56,7 @@ jobs:
         working-directory: tests
         run: |
           docker-compose up -d --build ${{ matrix.service }} \
-          && ./wait-until "curl -sLf -o /dev/null http://localhost:8024/api/health/ping/" 300
+          && bash wait-until "curl -sLf -o /dev/null http://localhost:3000/api/health/ping/" 300
         env:
           NEXT_VERSION: ${{ matrix.next_version }}
           NODE_VERSION: ${{ matrix.node_version }}
