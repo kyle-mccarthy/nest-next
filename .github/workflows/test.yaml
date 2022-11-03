@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build
         run: npm run build
@@ -59,7 +59,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: tests/e2e
-        run: npm ci
+        run: npm install
 
       - name: Run tests
         working-directory: tests/e2e
