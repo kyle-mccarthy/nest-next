@@ -15,7 +15,7 @@ const AboutAll: FC<TAboutAllProps> = ({ query }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return { props: ctx.query };
+  return { props: { query: ctx.query } };
 };
 
 export default AboutAll;
