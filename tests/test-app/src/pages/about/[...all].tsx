@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import { FC } from 'react';
 
 type TAboutAllProps = {
-  query: unknown;
+  query: any;
 };
 
 const AboutAll: FC<TAboutAllProps> = ({ query }) => {
