@@ -265,7 +265,8 @@ export class RenderService {
   }
 
   /**
-   * Format the path to the view
+   * Format the path to the view including path parameters interpolation
+   * Copied Next.js code is used for interpolation
    * @param view
    * @param params
    */
