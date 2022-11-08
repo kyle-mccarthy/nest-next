@@ -10,8 +10,8 @@ import {
   RendererConfig,
   RequestHandler,
 } from './types';
-import { getNamedRouteRegex } from './next/route-regex';
-import { interpolateDynamicPath } from './next/interpolate-dynamic-path';
+import { getNamedRouteRegex } from './vendor/next/route-regex';
+import { interpolateDynamicPath } from './vendor/next/interpolate-dynamic-path';
 
 export class RenderService {
   public static init(
@@ -191,7 +191,6 @@ export class RenderService {
     const getViewPath = this.getViewPath.bind(this);
 
     server.render = (response: any, view: string, data: any) => {
-      console.log('server render');
       const isFastify = response.request !== undefined;
 
       const res = isFastify ? response.res : response;
@@ -251,7 +250,6 @@ export class RenderService {
     } else {
       server.getInstance().use((req: any, res: any, next: () => any) => {
         res.render = ((view: string, data?: ParsedUrlQuery) => {
-          console.log('res render');
           if (!renderer) {
             throw new InternalServerErrorException(
               'RenderService: renderer is not set',
