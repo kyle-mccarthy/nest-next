@@ -3,8 +3,10 @@ import { AppController } from './AppController';
 import { Module } from '@nestjs/common';
 import Next from 'next';
 import { RenderModule } from 'nest-next';
+import { AppService } from './AppService';
 
 @Module({
+  providers: [AppService],
   controllers: [AppController],
   imports: [
     NestNextSpaModule,
