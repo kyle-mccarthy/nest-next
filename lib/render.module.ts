@@ -30,7 +30,11 @@ export class RenderModule {
       ? nextConfig.basePath
       : nextServer.nextConfig.basePath;
 
-    const config = { basePath, ...options };
+    const config: Partial<RendererConfig> = {
+      basePath,
+      dynamicRoutes: nextServer.sortedRoutes,
+      ...options,
+    };
 
     return {
       exports: [RenderService],

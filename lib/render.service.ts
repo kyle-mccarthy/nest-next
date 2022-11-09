@@ -10,8 +10,10 @@ import {
   RendererConfig,
   RequestHandler,
 } from './types';
+
 import { getNamedRouteRegex } from './vendor/next/route-regex';
 import { interpolateDynamicPath } from './vendor/next/interpolate-dynamic-path';
+import { isDynamicRoute } from './vendor/next/is-dynamic';
 
 export class RenderService {
   public static init(
@@ -40,6 +42,10 @@ export class RenderService {
     passthrough404: false,
     viewsDir: '/views',
   };
+  private dynamicRouteRegexes = new Map<
+    string,
+    ReturnType<typeof getNamedRouteRegex>
+  >();
 
   /**
    * Merge the default config with the config obj passed to method
@@ -57,6 +63,9 @@ export class RenderService {
     }
     if (typeof config.basePath === 'string') {
       this.config.basePath = config.basePath;
+    }
+    if (config.dynamicRoutes?.length) {
+      this.initializeDynamicRouteRegexes(config.dynamicRoutes);
     }
   }
 
@@ -169,6 +178,14 @@ export class RenderService {
     return isInternalUrl(url);
   }
 
+  public initializeDynamicRouteRegexes(routes: string[] = []) {
+    for (const route of routes) {
+      const pathname = this.getNormalizedPath(route);
+
+      this.dynamicRouteRegexes.set(route, getNamedRouteRegex(pathname));
+    }
+  }
+
   /**
    * Check if the service has been initialized by the module
    */
@@ -264,6 +281,17 @@ export class RenderService {
     }
   }
 
+  public getNormalizedPath(view: string) {
+    const basePath = this.getViewsDir() ?? '';
+    const denormalizedPath = [basePath, view].join(
+      view.startsWith('/') ? '' : '/',
+    );
+
+    const pathname = path.posix.normalize(denormalizedPath);
+
+    return pathname;
+  }
+
   /**
    * Format the path to the view including path parameters interpolation
    * Copied Next.js code is used for interpolation
@@ -271,10 +299,20 @@ export class RenderService {
    * @param params
    */
   protected getViewPath(view: string, params: ParsedUrlQuery) {
-    const baseDir = this.getViewsDir();
-    const basePath = baseDir ? baseDir : '';
-    const pathname = path.posix.normalize(`${basePath}/${view}`);
-    const regex = getNamedRouteRegex(pathname);
+    const pathname = this.getNormalizedPath(view);
+
+    if (!isDynamicRoute(pathname)) {
+      return pathname;
+    }
+
+    const regex = this.dynamicRouteRegexes.get(pathname);
+
+    if (!regex) {
+      console.warn(
+        `RenderService: view ${view} is dynamic and has no route regex`,
+      );
+    }
+
     return interpolateDynamicPath(pathname, params, regex);
   }
 }
