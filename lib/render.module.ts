@@ -4,6 +4,7 @@ import Server from 'next';
 import { RenderFilter } from './render.filter';
 import { RenderService } from './render.service';
 import { RendererConfig } from './types';
+import { isDynamicRoute } from './vendor/next/is-dynamic';
 
 @Module({
   providers: [RenderService],
@@ -32,7 +33,7 @@ export class RenderModule {
 
     const config: Partial<RendererConfig> = {
       basePath,
-      dynamicRoutes: nextServer.sortedRoutes,
+      dynamicRoutes: nextServer.sortedRoutes.filter(isDynamicRoute),
       ...options,
     };
 
