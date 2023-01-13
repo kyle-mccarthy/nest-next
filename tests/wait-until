@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# https://github.com/nickjj/wait-until
+
+command="${1}"
+timeout="${2:-30}"
+
+i=1
+until eval "${command}"
+do
+    ((i++))
+
+    if [ "${i}" -gt "${timeout}" ]; then
+        echo "command was never successful, aborting due to ${timeout}s timeout!"
+        exit 1
+    fi
+
+    sleep 1
+done
