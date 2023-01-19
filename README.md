@@ -30,7 +30,7 @@
 - [Examples folder structure](#examples-folder-structure)
   - [Basic Setup](#basic-setup)
   - [Monorepo](#monorepo)
-- [Versioning](#versioning)
+- [Contributing](#contributing)
 - [License](#license)
 
 <!-- vim-markdown-toc -->
@@ -299,6 +299,10 @@ outside of both projects. Changes in it during "dev" runs trigger recompilation 
 To run this project, the "ui" and "server" project must be built, in any order. The "dto" project will be implicitly built by the "server" project. After both of those builds, the "server" project can be started in either dev or production mode.
 
 It is important that "ui" references to "dto" refer to the TypeScript files (.ts files in the "src" folder), and NOT the declaration files (.d.ts files in the "dist" folder), due to how Next not being compiled in the same fashion as the server.
+
+### Contributing
+
+To contribute make sure your changes pass the test suite. To run test suite `docker`, `docker-compose` are required. Run `npm run test` to run tests. Playwright will be installed with required packages. To run tests in Next development mode run `npm run test-dev`. You can also specify `NODE_VERSION` and major `NEXT_VERSION` variables to run tests in specific environments.
 
 ### License
 
