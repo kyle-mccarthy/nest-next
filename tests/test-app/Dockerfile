@@ -1,0 +1,18 @@
+ARG NODE_VERSION=14
+
+FROM node:$NODE_VERSION
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+ARG NEXT_VERSION=12
+ENV NEXT_VERSION=${NEXT_VERSION}
+RUN npm install next@$NEXT_VERSION --save 
+RUN if [ "${NEXT_VERSION}" -ge "13" ]; then npm install react@18 react-dom@18 @types/react@18 @types/react-dom@18; fi
+
+RUN npm run build
+
+ENTRYPOINT ["npm", "run", "start"]

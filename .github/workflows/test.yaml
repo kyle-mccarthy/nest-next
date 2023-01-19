@@ -1,0 +1,85 @@
+name: Build and test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request_target:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: nest-next-dist
+          path: dist/
+
+  e2e:
+    needs: build
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node_version: [14]
+        next_version: [10, 11, 12, 13]
+        service: ['test-app', 'test-app-dev']
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Download dist directory
+        uses: actions/download-artifact@v3
+        with:
+          name: nest-next-dist
+          path: tests/test-app/nest-next-dist
+
+      - name: Start service
+        working-directory: tests
+        run: |
+          docker-compose up -d --build ${{ matrix.service }} \
+          && bash wait-until "curl -sLf -o /dev/null http://localhost:3000/api/health/ping/" 300
+        env:
+          NEXT_VERSION: ${{ matrix.next_version }}
+          NODE_VERSION: ${{ matrix.node_version }}
+
+      - name: Install dependencies
+        working-directory: tests/e2e
+        run: npm install && npx playwright install --with-deps
+
+      - name: Run tests
+        working-directory: tests/e2e
+        run: npx playwright test
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: tests/e2e/playwright-report/
+
+      - name: Display service logs
+        if: always()
+        run: docker logs tests_${{ matrix.service }}_1
+
+      - name: Stop containers
+        if: always()
+        working-directory: tests
+        run: docker-compose down

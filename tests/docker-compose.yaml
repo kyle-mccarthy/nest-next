@@ -1,0 +1,22 @@
+version: '3.2'
+
+services:
+  test-app:
+    build:
+      context: test-app
+      dockerfile: Dockerfile
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+        - NEXT_VERSION=${NEXT_VERSION}
+    ports:
+      - 3000:3000
+
+  test-app-dev:
+    build:
+      context: test-app
+      dockerfile: Dockerfile.dev
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+        - NEXT_VERSION=${NEXT_VERSION}
+    ports:
+      - 3000:3000
