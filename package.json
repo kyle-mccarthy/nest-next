@@ -16,7 +16,9 @@
     "build": "del-cli ./dist --force && tsc -p tsconfig.json",
     "prepublish": "yarn run build",
     "publish-public": "yarn publish --access public",
-    "lint": "node ./node_modules/eslint/bin/eslint.js lib/**"
+    "lint": "node ./node_modules/eslint/bin/eslint.js lib/**",
+    "test": "bash run_tests.sh test-app",
+    "test-dev": "bash run_tests.sh test-app-dev"
   },
   "devDependencies": {
     "@nestjs/common": "^8.4.4",
