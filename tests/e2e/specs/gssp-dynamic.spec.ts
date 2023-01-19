@@ -21,7 +21,7 @@ test.describe('getServerSideProps dynamic pages', () => {
     await expect(page.locator('h1')).toHaveText('FALLBACK BLOG POSTS');
   });
 
-  // FIXME nested slug paths [...slug] dont work - see https://github.com/kyle-mccarthy/nest-next/issues/93
+  // FIXME nested slug paths [...slug] dont work - see https://github.com/kyle-mccarthy/nest-next/issues/101
   test.skip('any about page', async ({ page }) => {
     await page.goto('/about/any-page/nested');
 
