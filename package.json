@@ -13,7 +13,7 @@
     "url": "https://github.com/kyle-mccarthy/nest-next.git"
   },
   "scripts": {
-    "build": "del-cli ./dist --force && tsc -p tsconfig.json",
+    "build": "npx del-cli ./dist --force && tsc -p tsconfig.json",
     "prepublish": "yarn run build",
     "publish-public": "yarn publish --access public",
     "lint": "node ./node_modules/eslint/bin/eslint.js lib/**",
