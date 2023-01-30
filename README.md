@@ -30,7 +30,8 @@
 - [Examples folder structure](#examples-folder-structure)
   - [Basic Setup](#basic-setup)
   - [Monorepo](#monorepo)
-- [Versioning](#versioning)
+- [Known Issues](#known-issues)
+- [Contributing](#contributing)
 - [License](#license)
 
 <!-- vim-markdown-toc -->
@@ -100,7 +101,7 @@ Next 9 added [built-in zero-config typescript support](https://nextjs.org/blog/n
 
 If you are having issues with unexpected tokens, files not emitting when building for production, warnings about `allowJs` and `declaration` not being used together, and other typescript related errors; see the `tsconfig.server.json` [file in the example project](/examples/basic/tsconfig.server.json) for the full config.
 
-#### Pass-through 404s 
+#### Pass-through 404s
 
 Instead of having Nest handle the response for requests that 404, they can be forwarded to Next's request handler.
 
@@ -295,10 +296,17 @@ outside of both projects. Changes in it during "dev" runs trigger recompilation 
         /IndexPage.ts
       package.json
 
-
 To run this project, the "ui" and "server" project must be built, in any order. The "dto" project will be implicitly built by the "server" project. After both of those builds, the "server" project can be started in either dev or production mode.
 
 It is important that "ui" references to "dto" refer to the TypeScript files (.ts files in the "src" folder), and NOT the declaration files (.d.ts files in the "dist" folder), due to how Next not being compiled in the same fashion as the server.
+
+### Known issues
+
+Currently Next ["catch all routes"](https://nextjs.org/docs/routing/dynamic-routes#catch-all-routes) pages do not work correctly. See issue [#101](https://github.com/kyle-mccarthy/nest-next/issues/101) for details.
+
+### Contributing
+
+To contribute make sure your changes pass the test suite. To run test suite `docker`, `docker-compose` are required. Run `npm run test` to run tests. Playwright will be installed with required packages. To run tests in Next development mode run `npm run test-dev`. You can also specify `NODE_VERSION` and major `NEXT_VERSION` variables to run tests in specific environments.
 
 ### License
 

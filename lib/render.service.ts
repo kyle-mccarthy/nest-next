@@ -11,6 +11,10 @@ import {
   RequestHandler,
 } from './types';
 
+import { getNamedRouteRegex } from './vendor/next/route-regex';
+import { interpolateDynamicPath } from './vendor/next/interpolate-dynamic-path';
+import { isDynamicRoute } from './vendor/next/is-dynamic';
+
 export class RenderService {
   public static init(
     config: Partial<RendererConfig>,
@@ -38,6 +42,10 @@ export class RenderService {
     passthrough404: false,
     viewsDir: '/views',
   };
+  private dynamicRouteRegexes = new Map<
+    string,
+    ReturnType<typeof getNamedRouteRegex>
+  >();
 
   /**
    * Merge the default config with the config obj passed to method
@@ -55,6 +63,9 @@ export class RenderService {
     }
     if (typeof config.basePath === 'string') {
       this.config.basePath = config.basePath;
+    }
+    if (config.dynamicRoutes?.length) {
+      this.initializeDynamicRouteRegexes(config.dynamicRoutes);
     }
   }
 
@@ -167,6 +178,14 @@ export class RenderService {
     return isInternalUrl(url);
   }
 
+  public initializeDynamicRouteRegexes(routes: string[] = []) {
+    for (const route of routes) {
+      const pathname = this.getNormalizedPath(route);
+
+      this.dynamicRouteRegexes.set(route, getNamedRouteRegex(pathname));
+    }
+  }
+
   /**
    * Check if the service has been initialized by the module
    */
@@ -198,7 +217,7 @@ export class RenderService {
         if (isFastify) {
           response.sent = true;
         }
-        return renderer(req, res, getViewPath(view), data);
+        return renderer(req, res, getViewPath(view, req.params), data);
       } else if (!renderer) {
         throw new InternalServerErrorException(
           'RenderService: renderer is not set',
@@ -228,7 +247,10 @@ export class RenderService {
     if (isFastifyAdapter) {
       server
         .getInstance()
-        .decorateReply('render', function(view: string, data?: ParsedUrlQuery) {
+        .decorateReply('render', function (
+          view: string,
+          data?: ParsedUrlQuery,
+        ) {
           const res = this.res;
           const req = this.request.raw;
 
@@ -240,7 +262,7 @@ export class RenderService {
 
           this.sent = true;
 
-          return renderer(req, res, getViewPath(view), data);
+          return renderer(req, res, getViewPath(view, req.params), data);
         } as RenderableResponse['render']);
     } else {
       server.getInstance().use((req: any, res: any, next: () => any) => {
@@ -251,7 +273,7 @@ export class RenderService {
             );
           }
 
-          return renderer(req, res, getViewPath(view), data);
+          return renderer(req, res, getViewPath(view, req.params), data);
         }) as RenderableResponse['render'];
 
         next();
@@ -259,13 +281,38 @@ export class RenderService {
     }
   }
 
+  public getNormalizedPath(view: string) {
+    const basePath = this.getViewsDir() ?? '';
+    const denormalizedPath = [basePath, view].join(
+      view.startsWith('/') ? '' : '/',
+    );
+
+    const pathname = path.posix.normalize(denormalizedPath);
+
+    return pathname;
+  }
+
   /**
-   * Format the path to the view
+   * Format the path to the view including path parameters interpolation
+   * Copied Next.js code is used for interpolation
    * @param view
+   * @param params
    */
-  protected getViewPath(view: string) {
-    const baseDir = this.getViewsDir();
-    const basePath = baseDir ? baseDir : '';
-    return path.posix.normalize(`${basePath}/${view}`);
+  protected getViewPath(view: string, params: ParsedUrlQuery) {
+    const pathname = this.getNormalizedPath(view);
+
+    if (!isDynamicRoute(pathname)) {
+      return pathname;
+    }
+
+    const regex = this.dynamicRouteRegexes.get(pathname);
+
+    if (!regex) {
+      console.warn(
+        `RenderService: view ${view} is dynamic and has no route regex`,
+      );
+    }
+
+    return interpolateDynamicPath(pathname, params, regex);
   }
 }

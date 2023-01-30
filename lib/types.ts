@@ -34,6 +34,7 @@ export interface RendererConfig {
   basePath?: string;
   dev: boolean;
   passthrough404?: boolean;
+  dynamicRoutes?: string[];
 }
 
 export interface ErrorResponse {
