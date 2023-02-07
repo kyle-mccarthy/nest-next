@@ -34,7 +34,11 @@ export class RenderModule {
       ? nextConfig.basePath
       : nextServer.nextConfig.basePath;
 
-    const dynamicRoutes = (nextServer.dynamicRoutes as DynamicRoutes).map(
+    const nextDynamicRoutes = nextServer.dynamicRoutes
+      ? nextServer.dynamicRoutes
+      : nextServer.router.dynamicRoutes
+
+    const dynamicRoutes = (nextDynamicRoutes as DynamicRoutes).map(
       (route) => route.page,
     );
 
@@ -82,7 +86,7 @@ export class RenderModule {
     private readonly httpAdapterHost: HttpAdapterHost,
     private readonly applicationConfig: ApplicationConfig,
     private readonly service: RenderService,
-  ) {}
+  ) { }
 
   /**
    * Register the RenderModule.
